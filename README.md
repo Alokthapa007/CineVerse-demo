@@ -122,7 +122,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 👥 Authors
 
-- [Your Name] — [GitHub Profile](https://github.com/your-username)
+- [Alok Thapa] — [GitHub Profile](https://github.com/Alokthapa007)
 
 ---
 
