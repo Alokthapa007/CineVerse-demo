@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    /* Dark theme background and overall layout for the sign-up screen. */
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0d1117, #121c26 40%, #0b1220);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+      color: #e6edf3;
+    }
+
+    /* Brand label styling for the CinVerse identity mark at the top-left. */
+    .brand {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      background: rgba(22, 27, 34, 0.9);
+      color: #f0f6fc;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Main card container for the sign-up form and dark mode card styling. */
+    main {
+      background-color: #161b22;
+      padding: 30px;
+      border: 1px solid #30363d;
+      border-radius: 18px;
+      width: 350px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Page title styling to match the dark theme. */
+    header h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #f0f6fc;
+    }
+
+    /* Remove default fieldset border for a cleaner form layout. */
+    fieldset {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Labels for the sign-up form fields. */
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #c9d1d9;
+    }
+
+    /* Styling for all sign-up input fields in the dark theme. */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background-color: #0d1117;
+      color: #e6edf3;
+    }
+
+    /* Placeholder text color for the input boxes. */
+    input::placeholder {
+      color: #8b949e;
+    }
+
+    /* Create Account button styling. */
+    button {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(180deg, #238636, #196c2f);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: linear-gradient(180deg, #2ea043, #238636);
+    }
+
+    /* Validation and success message styling for the sign-up form. */
+    .message {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #d93025;
+      min-height: 18px;
+      text-align: center;
+    }
+
+    /* Footer link styling for the login redirect. */
+    footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    footer a {
+      color: #8ec9ff;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top-left CinVerse branding for the sign-up page. -->
+  <div class="brand">CinVerse</div>
+
+  <!-- Main sign-up form area. -->
+  <main>
+    <header>
+      <!-- Page heading for the sign-up flow. -->
+      <h1>Sign Up</h1>
+    </header>
+
+    <!-- Sign-up form for collecting account details before validation. -->
+    <form id="signupForm" action="#" method="post">
+      <fieldset>
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+        <label for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" name="signupUsername" placeholder="Choose a username" required>
+
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" name="signupPassword" placeholder="Create a password" required>
+
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required>
+
+        <button type="submit">Create Account</button>
+      </fieldset>
+    </form>
+
+    <!-- Message area for sign-up validation feedback. -->
+    <div id="signupMessage" class="message" aria-live="polite"></div>
+
+    <!-- Link back to the login page. -->
+    <footer>
+      <a href="Login.html">Already have an account? Login</a>
+    </footer>
+  </main>
+
+  <script>
+    // Select the sign-up form and its feedback area for validation messages.
+    const signupForm = document.getElementById('signupForm');
+    const signupMessage = document.getElementById('signupMessage');
+
+    // Validate all account fields before accepting a new sign-up request.
+    signupForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      // Read the form values before applying validation checks.
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const username = document.getElementById('signupUsername').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Full name must contain at least 2 characters.
+      if (fullName.length < 2) {
+        signupMessage.textContent = 'Full name must be at least 2 characters.';
+        signupMessage.style.color = '#d93025';
+        return;
+      }
+
+      // Email must include an @ symbol to be considered valid for this prototype.
+      if (!email || !email.includes('@')) {
+        signupMessage.textContent = 'Please enter a valid email address.';
+        signupMessage.style.color = '#d93025';
+        return;
+      }
+
+      // Username must be at least 3 characters long.
+      if (username.length < 3) {
+        signupMessage.textContent = 'Username must be at least 3 characters.';
+        signupMessage.style.color = '#d93025';
+        return;
+      }
+
+      // Password must be at least 6 characters long.
+      if (password.length < 6) {
+        signupMessage.textContent = 'Password must be at least 6 characters.';
+        signupMessage.style.color = '#d93025';
+        return;
+      }
+
+      // Confirm password must match the original password exactly.
+      if (password !== confirmPassword) {
+        signupMessage.textContent = 'Passwords do not match.';
+        signupMessage.style.color = '#d93025';
+        return;
+      }
+
+      // Show success feedback when all checks pass.
+      signupMessage.textContent = 'Sign up successful! Local validation passed.';
+      signupMessage.style.color = '#2e7d32';
+      signupForm.reset();
+    });
+  </script>
+</body>
+</html>

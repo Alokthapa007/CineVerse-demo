@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Page</title>
+<style>
+  /* Dark theme background and overall page layout for the login screen. */
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0d1117, #121c26 40%, #0b1220);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    position: relative;
+    color: #e6edf3;
+  }
+
+  /* Brand label styling for the CinVerse logo area at the top-left. */
+  .brand {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    background: rgba(22, 27, 34, 0.9);
+    color: #f0f6fc;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Main card container for the login form and its dark theme panel. */
+  main {
+    background-color: #161b22;
+    padding: 30px;
+    border: 1px solid #30363d;
+    border-radius: 18px;
+    width: 320px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Page title styling to match the dark UI. */
+  header h1 {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #f0f6fc;
+  }
+
+  /* Remove default form fieldset border to keep the layout clean. */
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Input labels for username and password fields. */
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #c9d1d9;
+  }
+
+  /* Input box styling for user login fields. */
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: #0d1117;
+    color: #e6edf3;
+  }
+
+  /* Placeholder text styling for form inputs. */
+  input::placeholder {
+    color: #8b949e;
+  }
+
+  /* Login button styling and hover effect. */
+  button {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(180deg, #238636, #196c2f);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  button:hover {
+    background: linear-gradient(180deg, #2ea043, #238636);
+  }
+
+  /* Footer link styling for account actions such as reset and sign-up. */
+  footer {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 13px;
+  }
+
+  footer a {
+    color: #8ec9ff;
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<!-- Brand label placed at the top-left to match the app identity. -->
+<div class="brand">CinVerse</div>
+
+<!-- Main content area for the login form. -->
+<main>
+  <header>
+    <!-- Page heading shown above the login form. -->
+    <h1>Login</h1>
+  </header>
+
+  <!-- Login form with username and password fields for local validation. -->
+  <form id="loginForm" action="#" method="post">
+    <fieldset>
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+      <button type="submit">Login</button>
+    </fieldset>
+  </form>
+
+  <!-- Message area for showing login errors or success feedback. -->
+  <div id="loginMessage" style="margin-top: 12px; font-size: 13px; min-height: 18px; text-align: center; color: #d93025;"></div>
+
+  <!-- Links to the reset-password and sign-up pages. -->
+  <footer>
+    <a href="reset-password.html">Forgot Password?</a> | <a href="signup.html">Sign Up</a>
+  </footer>
+</main>
+
+<script>
+  // Select the login form and feedback message so the script can validate input.
+  const loginForm = document.getElementById('loginForm');
+  const loginMessage = document.getElementById('loginMessage');
+
+  // Handle the submit event and validate the username and password locally before continuing.
+  loginForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    // Read the current field values before checking validation rules.
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    // Require at least 3 characters for the username.
+    if (username.length < 3) {
+      loginMessage.textContent = 'Username must be at least 3 characters.';
+      loginMessage.style.color = '#d93025';
+      return;
+    }
+
+    // Require at least 6 characters for the password.
+    if (password.length < 6) {
+      loginMessage.textContent = 'Password must be at least 6 characters.';
+      loginMessage.style.color = '#d93025';
+      return;
+    }
+
+    // Show success feedback when both fields pass validation.
+    loginMessage.textContent = 'Login successful! Local validation passed.';
+    loginMessage.style.color = '#2e7d32';
+    loginForm.reset();
+  });
+</script>
+
+</body>
+</html>
