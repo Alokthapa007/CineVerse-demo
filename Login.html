@@ -136,8 +136,8 @@
   <!-- Login form with username and password fields for local validation. -->
   <form id="loginForm" action="#" method="post">
     <fieldset>
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" placeholder="Enter your username" required>
+      <label for="username">Username or Email</label>
+      <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
 
       <label for="password">Password</label>
       <input type="password" id="password" name="password" placeholder="Enter your password" required>
@@ -185,22 +185,27 @@
     const users = savedUsers ? savedUsers.split(';') : [];
 
     let validUser = false;
+    let loggedInUsername = '';
 
     // Check every saved account in a simple basic JavaScript way.
     for (let i = 0; i < users.length; i++) {
       const userData = users[i].split('|');
-      const savedUsername = userData[0];
-      const savedPassword = userData[1];
+      const savedUsername = (userData[0] || '').trim();
+      const savedPassword = userData[1] || '';
+      const savedEmail = (userData[2] || '').trim();
 
-      if (savedUsername && savedUsername.toLowerCase() === username.toLowerCase() && savedPassword === password) {
+      if (savedPassword === password &&
+          (savedUsername.toLowerCase() === username.toLowerCase() || savedEmail.toLowerCase() === username.toLowerCase())) {
         validUser = true;
+        loggedInUsername = savedUsername;
         break;
       }
     }
 
     // Allow a default admin account too.
-    if (username.toLowerCase() === 'admin' && password === 'admin123') {
+    if (!validUser && username.toLowerCase() === 'admin' && password === 'admin123') {
       validUser = true;
+      loggedInUsername = 'admin';
     }
 
     // If valid, redirect to the home page.
@@ -209,8 +214,7 @@
       loginMessage.style.color = '#2e7d32';
 
       // Save only the logged-in username for the home page.
-      // This keeps the password out of the visible Welcome text.
-      localStorage.setItem('loggedInUser', username);
+      localStorage.setItem('loggedInUser', loggedInUsername || username);
 
       setTimeout(function () {
         window.location.href = 'home.html';

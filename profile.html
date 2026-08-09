@@ -222,6 +222,22 @@
       transform: translateY(-1px);
     }
 
+    .message {
+      margin-top: 12px;
+      font-size: 14px;
+      min-height: 20px;
+      color: #a5b4fc;
+      text-align: center;
+    }
+
+    .message.success {
+      color: #86efac;
+    }
+
+    .message.error {
+      color: #fca5a5;
+    }
+
     @media (max-width: 820px) {
       .profile-head {
         grid-template-columns: 1fr;
@@ -284,6 +300,7 @@
           </fieldset>
 
           <button type="submit" class="save-btn">Save Profile</button>
+          <div id="profileMessage" class="message" aria-live="polite"></div>
         </form>
       </section>
     </section>
@@ -296,10 +313,16 @@
     var photoInput = document.getElementById('photoInput');
     var profileUsername = document.getElementById('profileUsername');
     var profileForm = document.getElementById('profileForm');
+    var profileMessage = document.getElementById('profileMessage');
     var usernameInput = document.getElementById('usernameInput');
     var currentPasswordInput = document.getElementById('currentPasswordInput');
     var newPasswordInput = document.getElementById('newPasswordInput');
     var confirmPasswordInput = document.getElementById('confirmPasswordInput');
+
+    function setProfileMessage(text, type) {
+      profileMessage.textContent = text;
+      profileMessage.className = 'message ' + (type === 'success' ? 'success' : type === 'error' ? 'error' : '');
+    }
 
     // Show the current logged-in username in the profile form.
     var loggedInUser = localStorage.getItem('loggedInUser');
@@ -361,12 +384,24 @@
       var users = getSavedUsers();
       var updated = false;
 
-      if (currentPassword || newPassword || confirmPassword) {
-        if (!loggedInUser) {
-          alert('Please log in before changing your password.');
-          return;
-        }
+      if (!loggedInUser) {
+        alert('Please log in before changing your profile.');
+        return;
+      }
 
+      var index = findUserIndex(loggedInUser, users);
+      if (index === -1) {
+        alert('Could not find your account.');
+        return;
+      }
+
+      var parts = users[index].split('|');
+      var savedPassword = parts[1] || '';
+      var savedEmail = parts[2] || '';
+      var finalUsername = username || loggedInUser;
+      var finalPassword = savedPassword;
+
+      if (currentPassword || newPassword || confirmPassword) {
         if (!currentPassword) {
           alert('Please enter your current password.');
           return;
@@ -382,45 +417,37 @@
           return;
         }
 
-        var index = findUserIndex(loggedInUser, users);
-        if (index === -1) {
-          alert('Could not find your account.');
-          return;
-        }
-
-        var savedPassword = users[index].split('|')[1] || '';
         if (savedPassword !== currentPassword) {
           alert('Current password is incorrect.');
           return;
         }
 
-        users[index] = (username || loggedInUser) + '|' + newPassword;
-        saveUsers(users);
+        finalPassword = newPassword;
         updated = true;
       }
 
       if (username && username !== loggedInUser) {
-        profileUsername.textContent = username;
-        localStorage.setItem('loggedInUser', username);
-        var index = findUserIndex(loggedInUser, users);
-        if (index !== -1) {
-          var passwordValue = users[index].split('|')[1] || '';
-          users[index] = username + '|' + passwordValue;
-          saveUsers(users);
-          updated = true;
+        updated = true;
+      }
+
+      if (updated) {
+        users[index] = [finalUsername, finalPassword, savedEmail].join('|');
+        saveUsers(users);
+
+        if (username && username !== loggedInUser) {
+          profileUsername.textContent = finalUsername;
+          localStorage.setItem('loggedInUser', finalUsername);
+          loggedInUser = finalUsername;
         }
-        loggedInUser = username;
+
+        setProfileMessage('Profile updated successfully. Your password has been changed.', 'success');
+      } else {
+        setProfileMessage('No changes were made.', 'error');
       }
 
       currentPasswordInput.value = '';
       newPasswordInput.value = '';
       confirmPasswordInput.value = '';
-
-      if (updated) {
-        alert('Profile updated successfully.');
-      } else {
-        alert('No changes were made.');
-      }
     });
   </script>
 </body>

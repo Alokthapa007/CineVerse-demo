@@ -244,15 +244,21 @@
       const users = savedUsers ? savedUsers.split(';') : [];
 
       let usernameExists = false;
+      let emailExists = false;
 
-      // Check if username already exists in the saved list.
+      // Check if username or email already exists in the saved list.
       for (let i = 0; i < users.length; i++) {
         const userData = users[i].split('|');
-        const savedUsername = userData[0];
+        const savedUsername = (userData[0] || '').toLowerCase();
+        const savedEmail = (userData[2] || '').toLowerCase();
 
-        if (savedUsername && savedUsername.toLowerCase() === username.toLowerCase()) {
+        if (savedUsername === username.toLowerCase()) {
           usernameExists = true;
           break;
+        }
+
+        if (savedEmail === email.toLowerCase()) {
+          emailExists = true;
         }
       }
 
@@ -262,8 +268,14 @@
         return;
       }
 
-      // Save the new user in a plain basic format: username|password.
-      users.push(username + '|' + password);
+      if (emailExists) {
+        signupMessage.textContent = 'This email is already registered. Please use another email.';
+        signupMessage.style.color = '#d93025';
+        return;
+      }
+
+      // Save the new user in a simple format: username|password|email.
+      users.push(username + '|' + password + '|' + email);
       localStorage.setItem('cineverseUser', users.join(';'));
 
       signupMessage.textContent = 'Sign up successful! Redirecting to login...';
