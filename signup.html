@@ -192,60 +192,83 @@
   </main>
 
   <script>
-    // Select the sign-up form and its feedback area for validation messages.
+    // Select the sign-up form and feedback message.
     const signupForm = document.getElementById('signupForm');
     const signupMessage = document.getElementById('signupMessage');
 
-    // Validate all account fields before accepting a new sign-up request.
+    // Prevent the form from submitting normally.
     signupForm.addEventListener('submit', function (event) {
       event.preventDefault();
 
-      // Read the form values before applying validation checks.
       const fullName = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
       const username = document.getElementById('signupUsername').value.trim();
       const password = document.getElementById('signupPassword').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
 
-      // Full name must contain at least 2 characters.
       if (fullName.length < 2) {
         signupMessage.textContent = 'Full name must be at least 2 characters.';
         signupMessage.style.color = '#d93025';
         return;
       }
 
-      // Email must include an @ symbol to be considered valid for this prototype.
       if (!email || !email.includes('@')) {
         signupMessage.textContent = 'Please enter a valid email address.';
         signupMessage.style.color = '#d93025';
         return;
       }
 
-      // Username must be at least 3 characters long.
       if (username.length < 3) {
         signupMessage.textContent = 'Username must be at least 3 characters.';
         signupMessage.style.color = '#d93025';
         return;
       }
 
-      // Password must be at least 6 characters long.
       if (password.length < 6) {
         signupMessage.textContent = 'Password must be at least 6 characters.';
         signupMessage.style.color = '#d93025';
         return;
       }
 
-      // Confirm password must match the original password exactly.
       if (password !== confirmPassword) {
         signupMessage.textContent = 'Passwords do not match.';
         signupMessage.style.color = '#d93025';
         return;
       }
 
-      // Show success feedback when all checks pass.
-      signupMessage.textContent = 'Sign up successful! Local validation passed.';
+      // Read saved users from localStorage as a simple string.
+      const savedUsers = localStorage.getItem('cineverseUser') || '';
+      const users = savedUsers ? savedUsers.split(';') : [];
+
+      let usernameExists = false;
+
+      // Check if username already exists in the saved list.
+      for (let i = 0; i < users.length; i++) {
+        const userData = users[i].split('|');
+        const savedUsername = userData[0];
+
+        if (savedUsername && savedUsername.toLowerCase() === username.toLowerCase()) {
+          usernameExists = true;
+          break;
+        }
+      }
+
+      if (usernameExists) {
+        signupMessage.textContent = 'This username already exists. Please choose another one.';
+        signupMessage.style.color = '#d93025';
+        return;
+      }
+
+      // Save the new user in a plain basic format: username|password.
+      users.push(username + '|' + password);
+      localStorage.setItem('cineverseUser', users.join(';'));
+
+      signupMessage.textContent = 'Sign up successful! Redirecting to login...';
       signupMessage.style.color = '#2e7d32';
-      signupForm.reset();
+
+      setTimeout(function () {
+        window.location.href = 'Login.html';
+      }, 800);
     });
   </script>
 </body>

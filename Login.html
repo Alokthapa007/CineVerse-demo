@@ -155,36 +155,69 @@
 </main>
 
 <script>
-  // Select the login form and feedback message so the script can validate input.
+  // Get the form and message box elements.
   const loginForm = document.getElementById('loginForm');
   const loginMessage = document.getElementById('loginMessage');
 
-  // Handle the submit event and validate the username and password locally before continuing.
+  // Basic login check: stop the form from reloading the page.
   loginForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
-    // Read the current field values before checking validation rules.
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
 
-    // Require at least 3 characters for the username.
+    // Validate basic field length.
     if (username.length < 3) {
       loginMessage.textContent = 'Username must be at least 3 characters.';
       loginMessage.style.color = '#d93025';
       return;
     }
 
-    // Require at least 6 characters for the password.
     if (password.length < 6) {
       loginMessage.textContent = 'Password must be at least 6 characters.';
       loginMessage.style.color = '#d93025';
       return;
     }
 
-    // Show success feedback when both fields pass validation.
-    loginMessage.textContent = 'Login successful! Local validation passed.';
-    loginMessage.style.color = '#2e7d32';
-    loginForm.reset();
+    // Read the saved users as a plain string from localStorage.
+    const savedUsers = localStorage.getItem('cineverseUser') || '';
+    const users = savedUsers ? savedUsers.split(';') : [];
+
+    let validUser = false;
+
+    // Check every saved account in a simple basic JavaScript way.
+    for (let i = 0; i < users.length; i++) {
+      const userData = users[i].split('|');
+      const savedUsername = userData[0];
+      const savedPassword = userData[1];
+
+      if (savedUsername && savedUsername.toLowerCase() === username.toLowerCase() && savedPassword === password) {
+        validUser = true;
+        break;
+      }
+    }
+
+    // Allow a default admin account too.
+    if (username.toLowerCase() === 'admin' && password === 'admin123') {
+      validUser = true;
+    }
+
+    // If valid, redirect to the home page.
+    if (validUser) {
+      loginMessage.textContent = 'Login successful! Redirecting...';
+      loginMessage.style.color = '#2e7d32';
+
+      // Save only the logged-in username for the home page.
+      // This keeps the password out of the visible Welcome text.
+      localStorage.setItem('loggedInUser', username);
+
+      setTimeout(function () {
+        window.location.href = 'home.html';
+      }, 500);
+    } else {
+      loginMessage.textContent = 'Invalid username or password.';
+      loginMessage.style.color = '#d93025';
+    }
   });
 </script>
 
