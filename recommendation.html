@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineVerse Recommendations</title>
+  <style>
+    /* Page layout and color palette */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, rgba(96, 165, 250, 0.12), transparent 25%),
+                  linear-gradient(180deg, #0b1220 0%, #05090f 100%);
+      color: #e6edf3;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 0 40px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px;
+      background: #111827;
+      border-bottom: 1px solid #334155;
+      gap: 20px;
+    }
+
+    .brand {
+      font-size: 1.7rem;
+      font-weight: bold;
+      letter-spacing: 0.03em;
+      color: #facc15;
+    }
+
+    nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    nav a {
+      color: #e2e8f0;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    nav a:hover,
+    nav a:focus {
+      color: #facc15;
+    }
+
+    .button-red {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 11px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .button-red:hover,
+    .button-red:focus {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      margin: 30px 0;
+      padding: 30px 26px;
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+    }
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 2.6rem;
+      letter-spacing: -0.03em;
+    }
+    .hero p {
+      margin: 0;
+      color: #cbd5e1;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .genres {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    .genre-btn {
+      background: #1f2937;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .genre-btn.active,
+    .genre-btn:hover,
+    .genre-btn:focus {
+      background: #2563eb;
+      border-color: #3b82f6;
+      outline: none;
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 0.98rem;
+      color: #94a3b8;
+    }
+
+    .recommendations {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+      margin-top: 28px;
+    }
+    .recommendation-card {
+      background: #111827;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 18px 35px rgba(0, 0, 0, 0.18);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+    .recommendation-card figure {
+      margin: 0;
+    }
+    .recommendation-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .card-content {
+      padding: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-title {
+      margin: 0 0 10px;
+      font-size: 1.25rem;
+    }
+    .card-meta {
+      margin: 0;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .card-meta time {
+      color: #cbd5e1;
+    }
+    .card-description {
+      margin: 16px 0 0;
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 0.97rem;
+    }
+
+    @media (max-width: 820px) {
+      .hero {
+        padding: 24px 20px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      nav {
+        justify-content: space-between;
+        width: 100%;
+      }
+      .hero {
+        padding: 20px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">CineVerse</div>
+    <nav aria-label="Main navigation">
+      <a href="home.html">Homepage</a>
+      <a href="recommendation.html">Recommendation</a>
+      <a href="#">Profile</a>
+    </nav>
+    <button id="logoutBtn" class="button-red">Logout</button>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Movie Recommendations</h1>
+      <p>This page shows movie suggestions based on your chosen genre. Use the buttons below to filter the list.</p>
+      <nav class="genres" aria-label="Genre filter" id="genreButtons">
+        <button class="genre-btn active" data-genre="all">All</button>
+        <button class="genre-btn" data-genre="action">Action</button>
+        <button class="genre-btn" data-genre="drama">Drama</button>
+        <button class="genre-btn" data-genre="comedy">Comedy</button>
+        <button class="genre-btn" data-genre="sci-fi">Sci-Fi</button>
+      </nav>
+    </section>
+
+    <!-- Shows feedback text when the genre selection changes. -->
+    <p class="status" id="statusText" aria-live="polite">Showing all recommended movies.</p>
+
+    <!-- This section will hold the movie recommendation cards. -->
+    <section class="recommendations" id="recommendationList" aria-label="Recommended movies"></section>
+  </main>
+
+  <script>
+    // Movie data for the recommendation page.
+    // Each object contains a title, genre, year, description, and image URL.
+    var movies = [
+      { title: 'Oppenheimer', genre: 'drama', year: 2023, description: 'A gripping historical drama about the scientist behind the atomic bomb.', image: 'https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg' },
+      { title: 'Barbie', genre: 'comedy', year: 2023, description: 'A bright comedy adventure that explores identity and imagination.', image: 'https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg' },
+      { title: 'Top Gun: Maverick', genre: 'action', year: 2022, description: 'A high-flying action film with thrilling jet sequences and strong characters.', image: 'https://image.tmdb.org/t/p/original/n0YuM4f5lvGAP6MAW2kBIzugXnc.jpg' },
+      { title: 'Spider-Man: Across the Spider-Verse', genre: 'action', year: 2023, description: 'A vibrant animated superhero adventure that crosses multiple universes.', image: 'https://image.tmdb.org/t/p/original/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg' },
+      { title: 'Dune: Part Two', genre: 'sci-fi', year: 2024, description: 'A sweeping sci-fi epic set on the desert planet of Arrakis.', image: 'https://image.tmdb.org/t/p/original/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg' },
+      { title: 'Guardians of the Galaxy Vol. 3', genre: 'action', year: 2023, description: 'A fun team adventure from the Marvel galaxy with humor and heart.', image: 'https://image.tmdb.org/t/p/original/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg' }
+    ];
+
+    // Find the page elements we will update with JavaScript.
+    var genreButtons = document.querySelectorAll('.genre-btn');
+    var recommendationList = document.getElementById('recommendationList');
+    var statusText = document.getElementById('statusText');
+    var logoutBtn = document.getElementById('logoutBtn');
+
+    // Show the list of movies on the page.
+    // This function updates the cards based on the chosen genre.
+    function showMovies(selectedGenre) {
+      recommendationList.innerHTML = '';
+      var count = 0;
+
+      for (var i = 0; i < movies.length; i++) {
+        var movie = movies[i];
+
+        // Only add cards for the selected genre or for all movies.
+        if (selectedGenre === 'all' || movie.genre === selectedGenre) {
+          count = count + 1;
+          var card = document.createElement('article');
+          card.className = 'recommendation-card';
+
+          var figure = document.createElement('figure');
+          var image = document.createElement('img');
+          image.src = movie.image;
+          image.alt = movie.title;
+          figure.appendChild(image);
+
+          var content = document.createElement('div');
+          content.className = 'card-content';
+
+          var title = document.createElement('h2');
+          title.className = 'card-title';
+          title.textContent = movie.title;
+
+          var meta = document.createElement('p');
+          meta.className = 'card-meta';
+          meta.textContent = movie.genre.toUpperCase();
+
+          var year = document.createElement('time');
+          year.setAttribute('datetime', movie.year.toString());
+          year.textContent = ' ' + movie.year;
+          meta.appendChild(year);
+
+          var description = document.createElement('p');
+          description.className = 'card-description';
+          description.textContent = movie.description;
+
+          content.appendChild(title);
+          content.appendChild(meta);
+          content.appendChild(description);
+
+          card.appendChild(figure);
+          card.appendChild(content);
+          recommendationList.appendChild(card);
+        }
+      }
+
+      if (count === 0) {
+        recommendationList.innerHTML = '<p style="color:#94a3b8; padding: 20px;">No recommendations found for that genre.</p>';
+      }
+
+      if (selectedGenre === 'all') {
+        statusText.textContent = 'Showing all recommended movies.';
+      } else {
+        statusText.textContent = 'Showing ' + selectedGenre + ' recommendations.';
+      }
+    }
+
+    // Set the active button and refresh the movie list.
+    // This updates the button style so users know which genre is selected.
+    function selectGenre(event) {
+      var button = event.target;
+      var selectedGenre = button.getAttribute('data-genre');
+
+      for (var j = 0; j < genreButtons.length; j++) {
+        var btn = genreButtons[j];
+        if (btn.getAttribute('data-genre') === selectedGenre) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      }
+
+      showMovies(selectedGenre);
+    }
+
+    // Attach click listeners to each genre button.
+    for (var k = 0; k < genreButtons.length; k++) {
+      genreButtons[k].addEventListener('click', selectGenre);
+    }
+
+    // Logout button clears the saved username and sends the user back to the login page.
+    logoutBtn.addEventListener('click', function () {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'Login.html';
+    });
+
+    // Render all movies by default when the page first loads.
+    showMovies('all');
+  </script>
+</body>
+</html>

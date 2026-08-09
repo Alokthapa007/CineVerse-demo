@@ -9,14 +9,16 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
+      background: radial-gradient(circle at top, rgba(96, 165, 250, 0.12), transparent 25%),
+                  linear-gradient(180deg, #0b1220 0%, #05090f 100%);
+      color: #e6edf3;
     }
 
     .container {
       width: 90%;
       max-width: 1100px;
       margin: 0 auto;
+      padding: 20px 0 40px;
     }
 
     /* Header area with brand, navigation links, and logout button. */
@@ -24,8 +26,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 18px 24px;
       background: #111827;
-      padding: 18px 20px;
       border-bottom: 1px solid #334155;
       gap: 20px;
     }
@@ -56,29 +58,42 @@
       background: #ef4444;
       color: white;
       border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
+      padding: 11px 18px;
+      border-radius: 12px;
       cursor: pointer;
+      font-weight: 700;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .logout-btn:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
     }
 
     /* Hero section for the movie homepage. */
     .hero {
-      background: linear-gradient(135deg, rgba(239,68,68,0.8), rgba(59,130,246,0.8));
-      padding: 50px 20px;
-      border-radius: 18px;
       margin: 30px 0;
+      padding: 30px 28px;
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
       text-align: center;
     }
 
     .hero h1 {
-      margin: 0 0 10px;
+      margin: 0 0 12px;
       font-size: 2.5rem;
+      letter-spacing: -0.03em;
     }
 
     .hero p {
       margin: 0;
       font-size: 1.1rem;
-      color: #e2e8f0;
+      color: #cbd5e1;
+      line-height: 1.7;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* Movie card layout. */
@@ -90,10 +105,11 @@
     }
 
     .movie-card {
-      background: #1e293b;
-      border-radius: 12px;
+      background: #111827;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 18px 35px rgba(0,0,0,0.18);
+      border: 1px solid rgba(148, 163, 184, 0.1);
     }
 
     .movie-card img {
@@ -118,7 +134,7 @@
 
     /* Review section styling for user feedback. */
     .reviews {
-      margin-top: 20px;
+      margin-top: 30px;
       padding-bottom: 40px;
     }
 
@@ -134,10 +150,11 @@
     }
 
     .review-card {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 18px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      background: #111827;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 18px 35px rgba(0,0,0,0.16);
+      border: 1px solid rgba(148, 163, 184, 0.1);
     }
 
     .review-header {
@@ -169,8 +186,8 @@
     <div class="brand">CineVerse</div>
 
     <nav class="nav" aria-label="Main navigation">
-      <a href="#">Homepage</a>
-      <a href="recommendations.html">Recommendation</a>
+      <a href="home.html">Homepage</a>
+      <a href="recommendation.html">Recommendation</a>
       <a href="#">Profile</a>
     </nav>
 
@@ -184,30 +201,30 @@
       <p>Watch trending movies, new releases, and your favorites all in one place.</p>
     </section>
 
-    <section class="movies">
-      <div class="movie-card">
-        <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=800&q=80" alt="Movie 1">
+    <section class="movies" aria-label="Popular movies">
+      <article class="movie-card">
+        <img src="https://image.tmdb.org/t/p/original/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" alt="Avatar: The Way of Water">
         <div class="movie-info">
-          <h3>Action Night</h3>
-          <p>Thriller • 2024</p>
+          <h3>Avatar: The Way of Water</h3>
+          <p>Science Fiction • 2022</p>
         </div>
-      </div>
+      </article>
 
-      <div class="movie-card">
-        <img src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=800&q=80" alt="Movie 2">
+      <article class="movie-card">
+        <img src="https://image.tmdb.org/t/p/original/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg" alt="Spider-Man: Across the Spider-Verse">
         <div class="movie-info">
-          <h3>Neon City</h3>
+          <h3>Spider-Man: Across the Spider-Verse</h3>
+          <p>Animation • 2023</p>
+        </div>
+      </article>
+
+      <article class="movie-card">
+        <img src="https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" alt="Oppenheimer">
+        <div class="movie-info">
+          <h3>Oppenheimer</h3>
           <p>Drama • 2023</p>
         </div>
-      </div>
-
-      <div class="movie-card">
-        <img src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=800&q=80" alt="Movie 3">
-        <div class="movie-info">
-          <h3>Midnight Run</h3>
-          <p>Adventure • 2025</p>
-        </div>
-      </div>
+      </article>
     </section>
 
     <section class="reviews">
