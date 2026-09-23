@@ -4,273 +4,448 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CineVerse Home</title>
-  <style>
-    /* Basic page styling for a simple movie website home page. */
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, rgba(96, 165, 250, 0.12), transparent 25%),
-                  linear-gradient(180deg, #0b1220 0%, #05090f 100%);
-      color: #e6edf3;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 20px 0 40px;
-    }
-
-    /* Header area with brand, navigation links, and logout button. */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 24px;
-      background: #111827;
-      border-bottom: 1px solid #334155;
-      gap: 20px;
-    }
-
-    .brand {
-      font-size: 1.7rem;
-      font-weight: bold;
-      color: #facc15;
-    }
-
-    .nav {
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .nav a {
-      color: #e2e8f0;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .nav a:hover {
-      color: #facc15;
-    }
-
-    .logout-btn {
-      background: #ef4444;
-      color: white;
-      border: none;
-      padding: 11px 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-    .logout-btn:hover {
-      background: #dc2626;
-      transform: translateY(-1px);
-    }
-
-    /* Hero section for the movie homepage. */
-    .hero {
-      margin: 30px 0;
-      padding: 30px 28px;
-      border-radius: 24px;
-      background: rgba(15, 23, 42, 0.92);
-      border: 1px solid rgba(148, 163, 184, 0.14);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
-      text-align: center;
-    }
-
-    .hero h1 {
-      margin: 0 0 12px;
-      font-size: 2.5rem;
-      letter-spacing: -0.03em;
-    }
-
-    .hero p {
-      margin: 0;
-      font-size: 1.1rem;
-      color: #cbd5e1;
-      line-height: 1.7;
-      max-width: 760px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Movie card layout. */
-    .movies {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      padding-bottom: 40px;
-    }
-
-    .movie-card {
-      background: #111827;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 18px 35px rgba(0,0,0,0.18);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    .movie-card img {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .movie-info {
-      padding: 15px;
-    }
-
-    .movie-info h3 {
-      margin: 0 0 8px;
-    }
-
-    .movie-info p {
-      margin: 0;
-      color: #cbd5e1;
-    }
-
-    /* Review section styling for user feedback. */
-    .reviews {
-      margin-top: 30px;
-      padding-bottom: 40px;
-    }
-
-    .reviews h2 {
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
-
-    .review-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .review-card {
-      background: #111827;
-      border-radius: 20px;
-      padding: 22px;
-      box-shadow: 0 18px 35px rgba(0,0,0,0.16);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    .review-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .review-user {
-      font-weight: bold;
-    }
-
-    .stars {
-      color: #facc15;
-      letter-spacing: 2px;
-    }
-
-    .review-card p {
-      color: #cbd5e1;
-      line-height: 1.5;
-      margin: 0;
-    }
-  </style>
+  <link rel="stylesheet" href="css/global.css">
 </head>
 <body>
-  <!-- Home page layout: header, hero section, popular movie cards, and user reviews. -->
-  <!-- Header section showing the app brand, navigation, and logout option. -->
-  <header>
+  <header class="site-header" data-navbar>
     <div class="brand">CineVerse</div>
 
-    <nav class="nav" aria-label="Main navigation">
-      <a href="home.html">Homepage</a>
-      <a href="recommendation.html">Recommendation</a>
-      <a href="profile.html">Profile</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="nav-link" href="home.html">Homepage</a>
+      <a class="nav-link" href="recommendation.html">Recommendation</a>
+      <a class="nav-link" href="profile.html">Profile</a>
     </nav>
 
-    <button id="logoutBtn" class="logout-btn">Logout</button>
+    <button id="logoutBtn" class="btn btn-danger" type="button">Logout</button>
   </header>
 
-  <!-- Main homepage content -->
   <main class="container">
     <section class="hero">
       <h1 id="welcomeText">Welcome!</h1>
-      <p>Watch trending movies, new releases, and your favorites all in one place.</p>
+      <p>Watch trending movies, new releases, and your favorites all in one place with a smooth, cinematic experience.</p>
+
+      <form id="searchForm" aria-label="Movie search">
+        <input id="searchInput" type="text" placeholder="Search movies by title" />
+        <button id="searchBtn" type="submit">Search</button>
+      </form>
+      <div id="searchMessage" aria-live="polite"></div>
     </section>
 
-    <section class="movies" aria-label="Popular movies">
-      <article class="movie-card">
-        <img src="https://image.tmdb.org/t/p/original/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" alt="Avatar: The Way of Water">
-        <div class="movie-info">
-          <h3>Avatar: The Way of Water</h3>
-          <p>Science Fiction • 2022</p>
-        </div>
-      </article>
-
-      <article class="movie-card">
-        <img src="https://image.tmdb.org/t/p/original/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg" alt="Spider-Man: Across the Spider-Verse">
-        <div class="movie-info">
-          <h3>Spider-Man: Across the Spider-Verse</h3>
-          <p>Animation • 2023</p>
-        </div>
-      </article>
-
-      <article class="movie-card">
-        <img src="https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" alt="Oppenheimer">
-        <div class="movie-info">
-          <h3>Oppenheimer</h3>
-          <p>Drama • 2023</p>
-        </div>
-      </article>
-    </section>
-
-    <section class="reviews">
-      <h2>User Reviews</h2>
-      <div class="review-grid">
-        <div class="review-card">
-          <div class="review-header">
-            <span class="review-user">Ariana</span>
-            <span class="stars">★★★★★</span>
-          </div>
-          <p>"The movie selection is amazing and the interface is super smooth. I found my new favorite action film within minutes."</p>
-        </div>
-
-        <div class="review-card">
-          <div class="review-header">
-            <span class="review-user">Sam</span>
-            <span class="stars">★★★★☆</span>
-          </div>
-          <p>"I love the recommendation style. It feels personal and the movie quality is really good on this platform."</p>
-        </div>
-
-        <div class="review-card">
-          <div class="review-header">
-            <span class="review-user">Nisha</span>
-            <span class="stars">★★★★★</span>
-          </div>
-          <p>"The homepage is clean and easy to use. The movie experience is fun and the layout looks modern and professional."</p>
-        </div>
-      </div>
+    <section class="movies" aria-label="Movie collections">
+      <div id="homeMovies" class="homepage-sections" aria-live="polite"></div>
+      <div id="searchResults" class="hidden-panel"></div>
     </section>
   </main>
 
+  <footer class="site-footer">© 2026 CineVerse • Discover your next favorite movie</footer>
+
+  <script src="js/global.js"></script>
   <script>
-    // Read only the logged-in username, not the full saved account string.
-    // This prevents the password from being displayed on the home page.
     const loggedUser = localStorage.getItem('loggedInUser') || 'Movie Lover';
     const welcomeText = document.getElementById('welcomeText');
-
     welcomeText.textContent = 'Welcome, ' + loggedUser + '!';
 
-    // Logout button clears the saved login status and sends the user back to login.
     document.getElementById('logoutBtn').addEventListener('click', function () {
       localStorage.removeItem('loggedInUser');
       window.location.href = 'Login.html';
     });
+
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const searchMessage = document.getElementById('searchMessage');
+    const searchResults = document.getElementById('searchResults');
+    const homeMovies = document.getElementById('homeMovies');
+    const movieCacheKey = 'cineverseMovieCache';
+    const movieCacheDuration = 1000 * 60 * 60 * 12;
+
+    function readMovieCache() {
+      try {
+        const raw = localStorage.getItem(movieCacheKey);
+        return raw ? JSON.parse(raw) : {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function writeMovieCache(cache) {
+      localStorage.setItem(movieCacheKey, JSON.stringify(cache));
+    }
+
+    async function fetchMoviesWithCache(query, page) {
+      const normalizedQuery = (query || '').trim();
+      const cache = readMovieCache();
+      const cacheKey = normalizedQuery.toLowerCase() + '|' + (page || 1);
+      const cached = cache[cacheKey];
+
+      if (cached && Date.now() - cached.time < movieCacheDuration) {
+        return cached.data;
+      }
+
+      try {
+        const result = await window.CineVerse.searchMovies(normalizedQuery);
+        const adapted = {
+          Search: result.Search || [],
+          totalResults: Number(result.totalResults || 0),
+          error: result.error || null
+        };
+
+        cache[cacheKey] = { time: Date.now(), data: adapted };
+        writeMovieCache(cache);
+        return adapted;
+      } catch (error) {
+        if (cached) return cached.data;
+        return { Search: [], totalResults: 0, error: 'Request limit reached. Please wait a moment and refresh.' };
+      }
+    }
+
+    function setSearchMessage(text, state) {
+      searchMessage.textContent = text || '';
+      const classes = ['field-status'];
+      if (state === 'success') classes.push('success');
+      if (state === 'error') classes.push('error');
+      searchMessage.className = classes.join(' ');
+    }
+
+    const SEARCH_RESULTS_PER_PAGE = 10;
+    const MAX_SEARCH_RESULTS = 30;
+    let currentQuery = '';
+    let currentPage = 0;
+    let totalResults = 0;
+    let fetchedResults = [];
+    let isSearchRunning = false;
+
+    function getPreferredGenres() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('cineversePreferences') || '[]');
+        if (Array.isArray(saved) && saved.length) {
+          return saved.slice(0, 3);
+        }
+      } catch (error) {
+        console.warn('Unable to read saved preferences.', error);
+      }
+      return ['action', 'sci-fi', 'drama'];
+    }
+
+    function getReviewEntries() {
+      try {
+        const value = JSON.parse(localStorage.getItem('cineverseReviews') || '{}');
+        if (!value || typeof value !== 'object') {
+          return [];
+        }
+
+        const reviews = [];
+        Object.keys(value).forEach(function (movieId) {
+          const list = Array.isArray(value[movieId]) ? value[movieId] : [value[movieId]];
+          list.forEach(function (entry) {
+            if (!entry) return;
+            if (typeof entry === 'string') {
+              reviews.push({ movieId: movieId, text: entry });
+              return;
+            }
+            if (typeof entry === 'object') {
+              const text = entry.text || entry.review || entry.comment || '';
+              if (text) {
+                reviews.push({ movieId: movieId, text: text, user: entry.user || 'Viewer' });
+              }
+            }
+          });
+        });
+        return reviews.reverse();
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function addCardClickBehavior(card, movie) {
+      card.addEventListener('click', function (event) {
+        if (event.target.closest('button')) return;
+        if (movie && movie.imdbID) {
+          window.location.href = 'movie-details.html?id=' + encodeURIComponent(movie.imdbID);
+        }
+      });
+    }
+
+    async function fetchSectionMovies(section) {
+      const seen = new Map();
+      const queries = Array.isArray(section.queries) ? section.queries.slice(0, 2) : [section.query];
+
+      for (const query of queries) {
+        if (!query) continue;
+        try {
+          const result = await fetchMoviesWithCache(query, 1);
+          if (result && result.error) {
+            continue;
+          }
+
+          const items = Array.isArray(result && result.Search) ? result.Search : [];
+          items.forEach(function (movie) {
+            if (!movie || !movie.imdbID || seen.has(movie.imdbID)) return;
+            seen.set(movie.imdbID, movie);
+          });
+
+          if (seen.size >= section.limit) break;
+        } catch (error) {
+          console.warn('Section fetch failed for:', query, error);
+        }
+      }
+
+      let movies = Array.from(seen.values()).slice(0, section.limit);
+
+      if (section.genre) {
+        const details = await Promise.all(movies.map(async function (movie) {
+          try {
+            return await window.CineVerse.fetchMovieDetails(movie.imdbID);
+          } catch (error) {
+            return null;
+          }
+        }));
+
+        movies = details.filter(function (movie) {
+          if (!movie || !movie.Genre) return false;
+          return movie.Genre.toLowerCase().includes(section.genre.toLowerCase());
+        }).slice(0, section.limit);
+      }
+
+      if (section.sort === 'rating') {
+        const details = await Promise.all(movies.map(async function (movie) {
+          try {
+            return await window.CineVerse.fetchMovieDetails(movie.imdbID);
+          } catch (error) {
+            return movie;
+          }
+        }));
+
+        movies = details
+          .filter(Boolean)
+          .sort(function (a, b) {
+            const ra = Number(a.imdbRating || 0);
+            const rb = Number(b.imdbRating || 0);
+            return rb - ra;
+          })
+          .slice(0, section.limit);
+      }
+
+      return movies;
+    }
+
+    function createSectionMarkup(section, movies) {
+      const wrapper = document.createElement('section');
+      wrapper.className = 'movie-section';
+
+      const header = document.createElement('div');
+      header.className = 'section-header';
+
+      const title = document.createElement('h2');
+      title.textContent = section.title;
+
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = movies.length ? 'Live' : 'Empty';
+
+      header.appendChild(title);
+      header.appendChild(badge);
+      wrapper.appendChild(header);
+
+      const rowShell = document.createElement('div');
+      rowShell.className = 'movie-row-shell';
+
+      const row = document.createElement('div');
+      row.className = 'movie-row';
+
+      if (!movies.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = 'No movies available for this section right now.';
+        row.appendChild(empty);
+      } else {
+        movies.forEach(function (movie) {
+          const card = window.CineVerse.createMovieCard(movie);
+          addCardClickBehavior(card, movie);
+          row.appendChild(card);
+        });
+      }
+
+      if (movies.length) {
+        const prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.className = 'scroll-button scroll-button-left';
+        prevBtn.setAttribute('aria-label', 'Scroll left');
+        prevBtn.textContent = '‹';
+        prevBtn.addEventListener('click', function () {
+          row.scrollBy({ left: -260, behavior: 'smooth' });
+        });
+
+        const nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.className = 'scroll-button scroll-button-right';
+        nextBtn.setAttribute('aria-label', 'Scroll right');
+        nextBtn.textContent = '›';
+        nextBtn.addEventListener('click', function () {
+          row.scrollBy({ left: 260, behavior: 'smooth' });
+        });
+
+        rowShell.appendChild(prevBtn);
+        rowShell.appendChild(row);
+        rowShell.appendChild(nextBtn);
+      } else {
+        rowShell.appendChild(row);
+      }
+
+      wrapper.appendChild(rowShell);
+      return wrapper;
+    }
+
+    async function renderMovieSection(section) {
+      const sectionEl = document.createElement('div');
+      sectionEl.className = 'movie-section-wrap';
+      homeMovies.appendChild(sectionEl);
+
+      const loading = document.createElement('div');
+      loading.className = 'section-loading';
+      loading.textContent = 'Loading ' + section.title + '...';
+      sectionEl.appendChild(loading);
+
+      try {
+        const movies = await fetchSectionMovies(section);
+        sectionEl.innerHTML = '';
+        sectionEl.appendChild(createSectionMarkup(section, movies));
+      } catch (error) {
+        console.error('Failed to load section:', section.title, error);
+        sectionEl.innerHTML = '';
+        sectionEl.appendChild(createSectionMarkup(section, []));
+      }
+    }
+
+    async function loadMovieHomepage() {
+      homeMovies.innerHTML = '';
+      const preferredGenres = getPreferredGenres();
+      const sectionDefinitions = [
+        { title: 'Trending Now', queries: ['batman', 'avengers'], limit: 10 },
+        { title: 'Popular Movies', queries: ['top gun', 'matrix'], limit: 10 },
+        { title: 'Top Rated', queries: ['inception', 'the dark knight'], limit: 10, sort: 'rating' },
+        { title: 'Now Playing', queries: ['new release', 'latest movie'], limit: 10 },
+        { title: 'Upcoming Movies', queries: ['coming soon', 'premiere'], limit: 10 },
+        { title: 'Action Movies', queries: ['john wick', 'action movie'], limit: 10, genre: 'Action' },
+        { title: 'Comedy Movies', queries: ['ghostbusters', 'comedy movie'], limit: 10, genre: 'Comedy' },
+        { title: 'Horror Movies', queries: ['scream', 'horror movie'], limit: 10, genre: 'Horror' },
+        { title: 'Sci-Fi Movies', queries: ['matrix', 'dune'], limit: 10, genre: 'Sci-Fi' },
+        { title: 'Romance Movies', queries: ['the notebook', 'romance movie'], limit: 10, genre: 'Romance' },
+        { title: 'Because You Like...', queries: preferredGenres.slice(0, 2).map(function (genre) { return genre + ' movie'; }), limit: 10 }
+      ];
+
+      for (const section of sectionDefinitions) {
+        await renderMovieSection(section);
+      }
+    }
+
+    async function performSearchPage(query, page) {
+      if (!query) return null;
+      if (isSearchRunning) return null;
+      isSearchRunning = true;
+
+      try {
+        const result = await window.CineVerse.searchMovies(query);
+        return {
+          Response: result && !result.error ? 'True' : 'False',
+          Search: result.Search || [],
+          totalResults: Number(result.totalResults || 0),
+          Error: result && result.error ? result.error : null
+        };
+      } catch (error) {
+        console.error(error);
+        setSearchMessage('Search failed. Please try again later.', 'error');
+        return null;
+      } finally {
+        isSearchRunning = false;
+      }
+    }
+
+    async function startSearch(query) {
+      query = (query || '').trim().replace(/\s+/g, ' ');
+      if (!query) {
+        setSearchMessage('Please enter a search term.', 'error');
+        return;
+      }
+
+      currentQuery = query;
+      currentPage = 0;
+      totalResults = 0;
+      fetchedResults = [];
+      searchResults.innerHTML = '';
+      searchResults.classList.add('hidden-panel');
+      setSearchMessage('Searching...');
+      await loadNextPage();
+    }
+
+    async function loadNextPage() {
+      if (!currentQuery) return;
+      if (fetchedResults.length >= MAX_SEARCH_RESULTS) return;
+
+      const nextPage = currentPage + 1;
+      const json = await performSearchPage(currentQuery, nextPage);
+      if (!json) return;
+
+      if (json.Response === 'False') {
+        setSearchMessage(json.Error || 'No movies found.', 'error');
+        return;
+      }
+
+      totalResults = parseInt(json.totalResults) || 0;
+      currentPage = nextPage;
+      const items = json.Search || [];
+
+      for (const item of items) {
+        if (fetchedResults.length >= MAX_SEARCH_RESULTS) break;
+        fetchedResults.push(item);
+      }
+
+      homeMovies.classList.add('hidden-panel');
+      searchResults.classList.remove('hidden-panel');
+      searchResults.innerHTML = '';
+
+      for (let i = 0; i < fetchedResults.length; i++) {
+        const card = window.CineVerse.createMovieCard(fetchedResults[i]);
+        addCardClickBehavior(card, fetchedResults[i]);
+        searchResults.appendChild(card);
+      }
+
+      const pagesAvailable = Math.ceil(totalResults / SEARCH_RESULTS_PER_PAGE);
+      const nextPageExists = currentPage < pagesAvailable && fetchedResults.length < MAX_SEARCH_RESULTS;
+      const existingBtn = document.getElementById('loadMoreBtn');
+      if (existingBtn) existingBtn.remove();
+
+      if (nextPageExists) {
+        const loadMore = document.createElement('button');
+        loadMore.id = 'loadMoreBtn';
+        loadMore.textContent = 'Load More';
+        loadMore.className = 'btn btn-secondary load-more-btn';
+        loadMore.addEventListener('click', async function () {
+          loadMore.disabled = true;
+          await loadNextPage();
+          loadMore.disabled = false;
+        });
+        searchResults.parentNode.insertBefore(loadMore, searchResults.nextSibling);
+      }
+
+      setSearchMessage('Showing ' + fetchedResults.length + ' of ' + Math.min(totalResults, MAX_SEARCH_RESULTS) + ' results.');
+    }
+
+    searchForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      startSearch(searchInput.value);
+    });
+
+    searchInput.addEventListener('input', function () {
+      if (!searchInput.value.trim()) {
+        homeMovies.classList.remove('hidden-panel');
+        searchResults.classList.add('hidden-panel');
+        const existingBtn = document.getElementById('loadMoreBtn');
+        if (existingBtn) existingBtn.remove();
+        setSearchMessage('');
+      }
+    });
+
+    loadMovieHomepage();
   </script>
 </body>
 </html>

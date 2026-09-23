@@ -4,263 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CineVerse Profile</title>
-  <style>
-    /* Shared dark theme and layout for the user profile page. */
-    /* The background uses a soft blue glow with deep navy tones to match the app theme. */
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, rgba(96, 165, 250, 0.12), transparent 25%),
-                  linear-gradient(180deg, #0b1220 0%, #05090f 100%);
-      color: #e6edf3;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 24px;
-      background: #111827;
-      border-bottom: 1px solid #334155;
-      gap: 20px;
-    }
-
-    .brand {
-      font-size: 1.7rem;
-      font-weight: bold;
-      letter-spacing: 0.03em;
-      color: #facc15;
-    }
-
-    nav {
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    nav a {
-      color: #e2e8f0;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s ease;
-    }
-
-    nav a:hover,
-    nav a:focus {
-      color: #facc15;
-    }
-
-    .button-red {
-      background: #ef4444;
-      color: white;
-      border: none;
-      padding: 11px 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .button-red:hover,
-    .button-red:focus {
-      background: #dc2626;
-      transform: translateY(-1px);
-    }
-
-    main {
-      width: 90%;
-      max-width: 1000px;
-      margin: 24px auto 40px;
-      padding: 0 0 20px;
-    }
-
-    .profile-head {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .profile-card,
-    .settings-card {
-      background: rgba(15, 23, 42, 0.94);
-      border: 1px solid rgba(148, 163, 184, 0.14);
-      border-radius: 24px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-    }
-
-    .profile-card {
-      padding: 28px 24px;
-      text-align: center;
-    }
-
-    .profile-card h2,
-    .settings-card h2 {
-      margin: 0 0 16px;
-      font-size: 1.8rem;
-    }
-
-    .profile-badge {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin: 0 auto 20px;
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      background: linear-gradient(180deg, rgba(96, 165, 250, 0.15), transparent);
-    }
-
-    .profile-badge img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
-    .profile-details {
-      margin: 0;
-      padding: 0;
-      color: #cbd5e1;
-      line-height: 1.8;
-      font-size: 0.98rem;
-    }
-
-    .profile-details dt {
-      font-weight: 700;
-      color: #e2e8f0;
-    }
-
-    .profile-details dd {
-      margin: 0 0 16px 0;
-      padding-left: 0;
-    }
-
-    .settings-card {
-      padding: 28px 24px;
-    }
-
-    fieldset {
-      border: none;
-      padding: 0;
-      margin: 0 0 20px;
-    }
-
-    legend {
-      font-size: 1rem;
-      margin-bottom: 14px;
-      color: #cbd5e1;
-      font-weight: 600;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #c9d1d9;
-      font-size: 0.95rem;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 18px;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      background: #0b1220;
-      color: #e6edf3;
-      font-size: 0.95rem;
-      box-sizing: border-box;
-    }
-
-    input[type="password"] {
-      letter-spacing: 0.05em;
-    }
-
-    .file-upload-label {
-      display: inline-block;
-      padding: 12px 14px;
-      margin-bottom: 18px;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      background: #0b1220;
-      color: #e6edf3;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.2s ease;
-      font-weight: 700;
-    }
-
-    .file-upload-label:hover,
-    .file-upload-label:focus {
-      background: #1e3a8a;
-      transform: translateY(-1px);
-    }
-
-    input::placeholder {
-      color: #8b949e;
-    }
-
-
-    .save-btn {
-      width: 100%;
-      padding: 12px 0;
-      border: none;
-      border-radius: 14px;
-      background: #2563eb;
-      color: white;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .save-btn:hover,
-    .save-btn:focus {
-      background: #1d4ed8;
-      transform: translateY(-1px);
-    }
-
-    .message {
-      margin-top: 12px;
-      font-size: 14px;
-      min-height: 20px;
-      color: #a5b4fc;
-      text-align: center;
-    }
-
-    .message.success {
-      color: #86efac;
-    }
-
-    .message.error {
-      color: #fca5a5;
-    }
-
-    @media (max-width: 820px) {
-      .profile-head {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/global.css">
 </head>
 <body>
-  <!-- Profile page layout: user avatar, settings form, and logout button. -->
-  <header>
+  <header class="site-header" data-navbar>
     <div class="brand">CineVerse</div>
-    <nav aria-label="Main navigation">
-      <a href="home.html">Homepage</a>
-      <a href="recommendation.html">Recommendation</a>
-      <a href="profile.html">Profile</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="nav-link" href="home.html">Homepage</a>
+      <a class="nav-link" href="recommendation.html">Recommendation</a>
+      <a class="nav-link" href="profile.html">Profile</a>
     </nav>
-    <button id="logoutBtn" class="button-red">Logout</button>
+    <button id="logoutBtn" class="btn btn-danger" type="button">Logout</button>
   </header>
 
   <main>
     <section class="profile-head">
       <aside class="profile-card" aria-labelledby="profileDetailsHeading">
-        <!-- Primary user information sidebar with avatar and account details. -->
         <h2 id="profileDetailsHeading">User Details</h2>
         <figure class="profile-badge">
           <img id="profilePhoto" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile photo preview">
@@ -272,7 +31,6 @@
       </aside>
 
       <section class="settings-card" aria-labelledby="editProfileHeading">
-        <!-- Settings panel for updating user profile details and image. -->
         <h2 id="editProfileHeading">Edit Profile</h2>
         <form id="profileForm">
           <fieldset>
@@ -306,8 +64,8 @@
     </section>
   </main>
 
+  <script src="js/global.js"></script>
   <script>
-    // Cache page elements for the profile page.
     var logoutBtn = document.getElementById('logoutBtn');
     var profilePhoto = document.getElementById('profilePhoto');
     var photoInput = document.getElementById('photoInput');
@@ -324,20 +82,17 @@
       profileMessage.className = 'message ' + (type === 'success' ? 'success' : type === 'error' ? 'error' : '');
     }
 
-    // Show the current logged-in username in the profile form.
     var loggedInUser = localStorage.getItem('loggedInUser');
     if (loggedInUser) {
       profileUsername.textContent = loggedInUser;
       usernameInput.value = loggedInUser;
     }
 
-    // Logout and return to the login screen.
     logoutBtn.addEventListener('click', function () {
       localStorage.removeItem('loggedInUser');
       window.location.href = 'Login.html';
     });
 
-    // Update the avatar when a new image is selected.
     photoInput.addEventListener('change', function () {
       var file = photoInput.files[0];
       if (!file) {
@@ -351,18 +106,15 @@
       reader.readAsDataURL(file);
     });
 
-    // Simple helper: get saved users from localStorage.
     function getSavedUsers() {
       var saved = localStorage.getItem('cineverseUser') || '';
       return saved ? saved.split(';') : [];
     }
 
-    // Simple helper: save updated users back to localStorage.
     function saveUsers(users) {
       localStorage.setItem('cineverseUser', users.join(';'));
     }
 
-    // Find the index of the current account in the saved user list.
     function findUserIndex(username, users) {
       for (var i = 0; i < users.length; i++) {
         var parts = users[i].split('|');
@@ -373,7 +125,6 @@
       return -1;
     }
 
-    // Handle profile save action.
     profileForm.addEventListener('submit', function (event) {
       event.preventDefault();
 
@@ -440,7 +191,7 @@
           loggedInUser = finalUsername;
         }
 
-        setProfileMessage('Profile updated successfully. Your password has been changed.', 'success');
+        setProfileMessage('Profile updated successfully.', 'success');
       } else {
         setProfileMessage('No changes were made.', 'error');
       }
