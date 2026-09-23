@@ -4,190 +4,65 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login Page</title>
-<style>
-  /* Dark theme background and overall page layout for the login screen. */
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0d1117, #121c26 40%, #0b1220);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    position: relative;
-    color: #e6edf3;
-  }
-
-  /* Brand label styling for the CinVerse logo area at the top-left. */
-  .brand {
-    position: absolute;
-    top: 18px;
-    left: 20px;
-    background: rgba(22, 27, 34, 0.9);
-    color: #f0f6fc;
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    border-radius: 999px;
-    padding: 8px 14px;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-  }
-
-  /* Main card container for the login form and its dark theme panel. */
-  main {
-    background-color: #161b22;
-    padding: 30px;
-    border: 1px solid #30363d;
-    border-radius: 18px;
-    width: 320px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-  }
-
-  /* Page title styling to match the dark UI. */
-  header h1 {
-    text-align: center;
-    font-size: 22px;
-    margin-bottom: 20px;
-    color: #f0f6fc;
-  }
-
-  /* Remove default form fieldset border to keep the layout clean. */
-  fieldset {
-    border: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  /* Input labels for username and password fields. */
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: #c9d1d9;
-  }
-
-  /* Input box styling for user login fields. */
-  input[type="text"],
-  input[type="password"] {
-    width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 15px;
-    border: 1px solid #30363d;
-    border-radius: 10px;
-    font-size: 14px;
-    box-sizing: border-box;
-    background-color: #0d1117;
-    color: #e6edf3;
-  }
-
-  /* Placeholder text styling for form inputs. */
-  input::placeholder {
-    color: #8b949e;
-  }
-
-  /* Login button styling and hover effect. */
-  button {
-    width: 100%;
-    padding: 10px;
-    background: linear-gradient(180deg, #238636, #196c2f);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-
-  button:hover {
-    background: linear-gradient(180deg, #2ea043, #238636);
-  }
-
-  /* Footer link styling for account actions such as reset and sign-up. */
-  footer {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 13px;
-  }
-
-  footer a {
-    color: #8ec9ff;
-    text-decoration: none;
-  }
-
-  footer a:hover {
-    text-decoration: underline;
-  }
-</style>
+<link rel="stylesheet" href="css/global.css">
 </head>
-<body>
+<body class="auth-page">
+<div class="auth-shell">
+  <div class="auth-brand">CineVerse</div>
 
-<!-- Login page: validate username/password and redirect to the home page on success. -->
-<!-- Brand label placed at the top-left to match the app identity. -->
-<div class="brand">CineVerse</div>
+  <main class="auth-card">
+    <header>
+      <h1 class="auth-title">Login</h1>
+    </header>
 
-<!-- Main content area for the login form. -->
-<main>
-  <header>
-    <!-- Page heading shown above the login form. -->
-    <h1>Login</h1>
-  </header>
+    <form id="loginForm" class="auth-form" action="#" method="post">
+      <fieldset>
+        <label for="username">Username or Email</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
 
-  <!-- Login form with username and password fields for local validation. -->
-  <form id="loginForm" action="#" method="post">
-    <fieldset>
-      <label for="username">Username or Email</label>
-      <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        <button type="submit">Login</button>
+      </fieldset>
+    </form>
 
-      <button type="submit">Login</button>
-    </fieldset>
-  </form>
+    <div id="loginMessage" class="auth-message" aria-live="polite"></div>
 
-  <!-- Message area for showing login errors or success feedback. -->
-  <div id="loginMessage" style="margin-top: 12px; font-size: 13px; min-height: 18px; text-align: center; color: #d93025;"></div>
-
-  <!-- Links to the reset-password and sign-up pages. -->
-  <footer>
-    <a href="reset-password.html">Forgot Password?</a> | <a href="signup.html">Sign Up</a>
-  </footer>
-</main>
-
+    <div class="auth-footer">
+      <a class="auth-link" href="reset-password.html">Forgot Password?</a> | <a class="auth-link" href="signup.html">Sign Up</a>
+    </div>
+  </main>
+</div>
+<script src="js/global.js"></script>
 <script>
-  // Get the form and message box elements.
   const loginForm = document.getElementById('loginForm');
   const loginMessage = document.getElementById('loginMessage');
 
-  // Basic login check: stop the form from reloading the page.
   loginForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
 
-    // Validate basic field length.
     if (username.length < 3) {
       loginMessage.textContent = 'Username must be at least 3 characters.';
-      loginMessage.style.color = '#d93025';
+      loginMessage.className = 'auth-message error';
       return;
     }
 
     if (password.length < 6) {
       loginMessage.textContent = 'Password must be at least 6 characters.';
-      loginMessage.style.color = '#d93025';
+      loginMessage.className = 'auth-message error';
       return;
     }
 
-    // Read the saved users as a plain string from localStorage.
     const savedUsers = localStorage.getItem('cineverseUser') || '';
     const users = savedUsers ? savedUsers.split(';') : [];
 
     let validUser = false;
     let loggedInUsername = '';
 
-    // Check every saved account in a simple basic JavaScript way.
     for (let i = 0; i < users.length; i++) {
       const userData = users[i].split('|');
       const savedUsername = (userData[0] || '').trim();
@@ -202,18 +77,14 @@
       }
     }
 
-    // Allow a default admin account too.
     if (!validUser && username.toLowerCase() === 'admin' && password === 'admin123') {
       validUser = true;
       loggedInUsername = 'admin';
     }
 
-    // If valid, redirect to the home page.
     if (validUser) {
       loginMessage.textContent = 'Login successful! Redirecting...';
-      loginMessage.style.color = '#2e7d32';
-
-      // Save only the logged-in username for the home page.
+      loginMessage.className = 'auth-message success';
       localStorage.setItem('loggedInUser', loggedInUsername || username);
 
       setTimeout(function () {
@@ -221,7 +92,7 @@
       }, 500);
     } else {
       loginMessage.textContent = 'Invalid username or password.';
-      loginMessage.style.color = '#d93025';
+      loginMessage.className = 'auth-message error';
     }
   });
 </script>

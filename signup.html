@@ -4,202 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
-  <style>
-    /* Dark theme background and overall layout for the sign-up screen. */
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0d1117, #121c26 40%, #0b1220);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
-      position: relative;
-      color: #e6edf3;
-    }
-
-    /* Brand label styling for the CinVerse identity mark at the top-left. */
-    .brand {
-      position: absolute;
-      top: 18px;
-      left: 20px;
-      background: rgba(22, 27, 34, 0.9);
-      color: #f0f6fc;
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-    }
-
-    /* Main card container for the sign-up form and dark mode card styling. */
-    main {
-      background-color: #161b22;
-      padding: 30px;
-      border: 1px solid #30363d;
-      border-radius: 18px;
-      width: 350px;
-      max-width: 100%;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-    }
-    /* Responsive adjustments for smaller screens to ensure usability. */
-    @media (max-width: 480px) {
-      body {
-        padding-top: 80px;
-      }
-
-      .brand {
-        left: 50%;
-        transform: translateX(-50%);
-        white-space: nowrap;
-      }
-
-      main {
-        width: min(100%, 350px);
-      }
-    }
-
-    /* Page title styling to match the dark theme. */
-    header h1 {
-      text-align: center;
-      font-size: 22px;
-      margin-bottom: 20px;
-      color: #f0f6fc;
-    }
-
-    /* Remove default fieldset border for a cleaner form layout. */
-    fieldset {
-      border: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    /* Labels for the sign-up form fields. */
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 14px;
-      color: #c9d1d9;
-    }
-
-    /* Styling for all sign-up input fields in the dark theme. */
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 15px;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      font-size: 14px;
-      box-sizing: border-box;
-      background-color: #0d1117;
-      color: #e6edf3;
-    }
-
-    /* Placeholder text color for the input boxes. */
-    input::placeholder {
-      color: #8b949e;
-    }
-
-    /* Create Account button styling. */
-    button {
-      width: 100%;
-      padding: 10px;
-      background: linear-gradient(180deg, #238636, #196c2f);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    button:hover {
-      background: linear-gradient(180deg, #2ea043, #238636);
-    }
-
-    /* Validation and success message styling for the sign-up form. */
-    .message {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #d93025;
-      min-height: 18px;
-      text-align: center;
-    }
-
-    /* Footer link styling for the login redirect. */
-    footer {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 13px;
-    }
-
-    footer a {
-      color: #8ec9ff;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <link rel="stylesheet" href="css/global.css">
 </head>
-<body>
-  <!-- Sign-up page: collect new account details and save them to localStorage. -->
-  <!-- Top-left CinVerse branding for the sign-up page. -->
-  <div class="brand" role="banner" aria-label="CineVerse brand">CineVerse</div>
+<body class="auth-page">
+  <div class="auth-shell">
+    <div class="auth-brand" role="banner" aria-label="CineVerse brand">CineVerse</div>
 
-  <!-- Main sign-up form area. -->
-  <main>
-    <section aria-labelledby="signupTitle">
-      <header>
-        <!-- Page heading for the sign-up flow. -->
-        <h1 id="signupTitle">Sign Up</h1>
-      </header>
+    <main class="auth-card wide">
+      <section aria-labelledby="signupTitle">
+        <header>
+          <h1 id="signupTitle" class="auth-title">Sign Up</h1>
+        </header>
 
-      <!-- Sign-up form for collecting account details before validation. -->
-      <form id="signupForm" action="#" method="post">
-      <fieldset>
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+        <form id="signupForm" class="auth-form" action="#" method="post">
+          <fieldset>
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
 
-        <label for="signupUsername">Username</label>
-        <input type="text" id="signupUsername" name="signupUsername" placeholder="Choose a username" required>
+            <label for="signupUsername">Username</label>
+            <input type="text" id="signupUsername" name="signupUsername" placeholder="Choose a username" required>
 
-        <label for="signupPassword">Password</label>
-        <input type="password" id="signupPassword" name="signupPassword" placeholder="Create a password" required>
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" name="signupPassword" placeholder="Create a password" required>
 
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required>
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required>
 
-        <button type="submit">Create Account</button>
-      </fieldset>
-    </form>
+            <button type="submit">Create Account</button>
+          </fieldset>
+        </form>
 
-    <!-- Message area for sign-up validation feedback. -->
-    <div id="signupMessage" class="message" aria-live="polite"></div>
+        <div id="signupMessage" class="auth-message" aria-live="polite"></div>
 
-    <!-- Link back to the login page. -->
-    <footer>
-      <a href="Login.html">Already have an account? Login</a>
-    </footer>
-    </section>
-  </main>
+        <div class="auth-footer">
+          <a class="auth-link" href="Login.html">Already have an account? Login</a>
+        </div>
+      </section>
+    </main>
+  </div>
 
+  <script src="js/global.js"></script>
   <script>
-    // Select the sign-up form and feedback message.
     const signupForm = document.getElementById('signupForm');
     const signupMessage = document.getElementById('signupMessage');
 
-    // Prevent the form from submitting normally.
     signupForm.addEventListener('submit', function (event) {
       event.preventDefault();
 
@@ -211,42 +62,40 @@
 
       if (fullName.length < 2) {
         signupMessage.textContent = 'Full name must be at least 2 characters.';
-        signupMessage.style.color = '#d93025';
+        signupMessage.className = 'auth-message error';
         return;
       }
 
       if (!email || !email.includes('@')) {
         signupMessage.textContent = 'Please enter a valid email address.';
-        signupMessage.style.color = '#d93025';
+        signupMessage.className = 'auth-message error';
         return;
       }
 
       if (username.length < 3) {
         signupMessage.textContent = 'Username must be at least 3 characters.';
-        signupMessage.style.color = '#d93025';
+        signupMessage.className = 'auth-message error';
         return;
       }
 
       if (password.length < 6) {
         signupMessage.textContent = 'Password must be at least 6 characters.';
-        signupMessage.style.color = '#d93025';
+        signupMessage.className = 'auth-message error';
         return;
       }
 
       if (password !== confirmPassword) {
         signupMessage.textContent = 'Passwords do not match.';
-        signupMessage.style.color = '#d93025';
+        signupMessage.className = 'auth-message error';
         return;
       }
 
-      // Read saved users from localStorage as a simple string.
       const savedUsers = localStorage.getItem('cineverseUser') || '';
       const users = savedUsers ? savedUsers.split(';') : [];
 
       let usernameExists = false;
       let emailExists = false;
 
-      // Check if username or email already exists in the saved list.
       for (let i = 0; i < users.length; i++) {
         const userData = users[i].split('|');
         const savedUsername = (userData[0] || '').toLowerCase();
@@ -264,22 +113,21 @@
 
       if (usernameExists) {
         signupMessage.textContent = 'This username already exists. Please choose another one.';
-        signupMessage.style.color = '#d93025';
+        signupMessage.className = 'auth-message error';
         return;
       }
 
       if (emailExists) {
         signupMessage.textContent = 'This email is already registered. Please use another email.';
-        signupMessage.style.color = '#d93025';
+        signupMessage.className = 'auth-message error';
         return;
       }
 
-      // Save the new user in a simple format: username|password|email.
       users.push(username + '|' + password + '|' + email);
       localStorage.setItem('cineverseUser', users.join(';'));
 
       signupMessage.textContent = 'Sign up successful! Redirecting to login...';
-      signupMessage.style.color = '#2e7d32';
+      signupMessage.className = 'auth-message success';
 
       setTimeout(function () {
         window.location.href = 'Login.html';

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineVerse Movie Details</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .movie-detail-page {
+      padding: 32px 0 48px;
+    }
+
+    .movie-detail-card {
+      display: grid;
+      grid-template-columns: minmax(240px, 360px) minmax(0, 1fr);
+      gap: 32px;
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(8, 8, 8, 0.98));
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+      align-items: center;
+    }
+
+    .movie-detail-poster {
+      width: 100%;
+      min-height: 420px;
+      object-fit: cover;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #111111;
+      box-shadow: 0 18px 32px rgba(0, 0, 0, 0.32);
+      align-self: center;
+    }
+
+    .movie-detail-content {
+      padding: 12px 8px 10px 0;
+    }
+
+    .movie-detail-content h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    .movie-detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      color: var(--text-secondary);
+      margin: 0 0 18px;
+      font-size: 0.96rem;
+    }
+
+    .movie-detail-rating {
+      color: var(--accent);
+      font-weight: 800;
+      margin: 0 0 18px;
+    }
+
+    .movie-detail-plot {
+      margin: 0 0 24px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      font-size: 1.04rem;
+    }
+
+    .movie-detail-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .movie-detail-item {
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .movie-detail-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .movie-detail-item span {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .detail-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .detail-actions a {
+      min-width: 160px;
+      text-align: center;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .movie-trailer-wrap {
+      margin-top: 28px;
+      background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(8, 8, 8, 0.98));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+    }
+
+    .movie-trailer-wrap h2 {
+      margin: 0 0 16px;
+      font-size: clamp(1.5rem, 2vw, 2.1rem);
+    }
+
+    .movie-trailer-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #111111;
+    }
+
+    .movie-trailer-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    @media (max-width: 760px) {
+      .movie-detail-card {
+        grid-template-columns: 1fr;
+      }
+
+      .movie-detail-poster {
+        min-height: 320px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" data-navbar>
+    <div class="brand">CineVerse</div>
+  </header>
+
+  <main class="container movie-detail-page">
+    <div id="movieDetailContent" aria-live="polite"></div>
+  </main>
+
+  <script src="js/global.js"></script>
+  <script>
+    const detailContainer = document.getElementById('movieDetailContent');
+
+    function getPosterFallback() {
+      const svg = [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450">',
+        '<defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#151515"/><stop offset="100%" stop-color="#2a2a2a"/></linearGradient></defs>',
+        '<rect width="300" height="450" fill="url(#bg)"/>',
+        '<rect x="30" y="40" width="240" height="310" rx="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)"/>',
+        '<circle cx="150" cy="160" r="56" fill="rgba(255,255,255,0.08)"/>',
+        '<path d="M121 188h58c18 0 33 15 33 33v49H88v-49c0-18 15-33 33-33z" fill="rgba(255,255,255,0.08)"/>',
+        '<path d="M85 290h130l-18 54H103z" fill="rgba(255,255,255,0.08)"/>',
+        '<text x="150" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#e5e7eb" font-weight="700">Movie poster</text>',
+        '</svg>'
+      ].join('');
+      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
+
+    function buildTrailerEmbedUrl(videoKey) {
+      const key = typeof videoKey === 'string' ? videoKey.trim() : '';
+      if (!key || !/^[A-Za-z0-9_-]{11}$/.test(key)) {
+        return '';
+      }
+      return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(key) + '?autoplay=0&rel=0&modestbranding=1';
+    }
+
+    function renderMovieDetail(movie) {
+      if (!movie) {
+        detailContainer.innerHTML = '<div class="empty-state">Movie details are not available right now.</div>';
+        return;
+      }
+
+      const poster = movie.Poster && movie.Poster !== 'N/A' ? movie.Poster : getPosterFallback();
+      const genres = movie.Genre || 'N/A';
+      const director = movie.Director || 'N/A';
+      const writer = movie.Writer || 'N/A';
+      const actors = movie.Actors || 'N/A';
+      const language = movie.Language || 'N/A';
+      const awards = movie.Awards || 'N/A';
+      const runtime = movie.Runtime || 'N/A';
+      const imdbRating = movie.imdbRating && movie.imdbRating !== 'N/A' ? movie.imdbRating : 'N/A';
+      const plot = movie.Plot && movie.Plot !== 'N/A' ? movie.Plot : 'No plot summary is available.';
+      const trailerUrl = buildTrailerEmbedUrl(movie.trailerKey || movie.trailer_key);
+      const trailerMarkup = trailerUrl
+        ? '<div class="movie-trailer-frame"><iframe src="' + trailerUrl + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Movie trailer"></iframe></div>'
+        : '<div class="empty-state">Trailer is not available for this movie right now.</div>';
+
+      detailContainer.innerHTML = [
+        '<article class="movie-detail-card">',
+        '  <img class="movie-detail-poster" src="' + poster + '" alt="' + (movie.Title || 'Movie poster') + '" />',
+        '  <div class="movie-detail-content">',
+        '    <h1>' + (movie.Title || 'Untitled movie') + '</h1>',
+        '    <div class="movie-detail-meta">',
+        '      <span>' + (movie.Year || 'N/A') + '</span>',
+        '      <span>•</span>',
+        '      <span>' + (movie.Type || 'Movie') + '</span>',
+        '      <span>•</span>',
+        '      <span>' + runtime + '</span>',
+        '    </div>',
+        '    <p class="movie-detail-rating">IMDb: ' + imdbRating + '</p>',
+        '    <p class="movie-detail-plot">' + plot + '</p>',
+        '    <div class="movie-detail-info">',
+        '      <div class="movie-detail-item"><strong>Genre</strong><span>' + genres + '</span></div>',
+        '      <div class="movie-detail-item"><strong>Director</strong><span>' + director + '</span></div>',
+        '      <div class="movie-detail-item"><strong>Writer</strong><span>' + writer + '</span></div>',
+        '      <div class="movie-detail-item"><strong>Actors</strong><span>' + actors + '</span></div>',
+        '      <div class="movie-detail-item"><strong>Language</strong><span>' + language + '</span></div>',
+        '      <div class="movie-detail-item"><strong>Awards</strong><span>' + awards + '</span></div>',
+        '    </div>',
+        '    <div class="detail-actions">',
+        '      <a class="btn btn-secondary" href="home.html">Back to Home</a>',
+        '      <a class="btn btn-primary" href="recommendation.html">Browse Recommendations</a>',
+        '    </div>',
+        '  </div>',
+        '</article>',
+        '<section class="movie-trailer-wrap">',
+        '  <h2>Official Trailer</h2>',
+        trailerMarkup,
+        '</section>'
+      ].join('');
+    }
+
+    async function loadMovieDetails() {
+      const params = new URLSearchParams(window.location.search);
+      const imdbID = params.get('id');
+
+      if (!imdbID) {
+        detailContainer.innerHTML = '<div class="empty-state">No movie ID was provided.</div>';
+        return;
+      }
+
+      try {
+        const movie = await window.CineVerse.fetchMovieDetails(imdbID);
+        let trailerKey = '';
+
+        try {
+          const trailer = await window.CineVerse.fetchMovieTrailer(imdbID);
+          trailerKey = trailer && trailer.key ? trailer.key : '';
+        } catch (trailerError) {
+          console.warn('Trailer lookup failed:', trailerError);
+        }
+
+        renderMovieDetail(Object.assign({}, movie, { trailerKey: trailerKey }));
+      } catch (error) {
+        console.error('Movie details failed to load:', error);
+        detailContainer.innerHTML = '<div class="empty-state">This movie could not be loaded right now.</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.CineVerse && window.CineVerse.fetchMovieDetails) {
+        loadMovieDetails();
+      } else {
+        detailContainer.innerHTML = '<div class="empty-state">The movie details script could not load.</div>';
+      }
+    });
+  </script>
+</body>
+</html>
