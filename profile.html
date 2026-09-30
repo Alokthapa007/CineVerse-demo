@@ -58,7 +58,7 @@
           </fieldset>
 
           <button type="submit" class="save-btn">Save Profile</button>
-          <button type="button" id="profileLogoutBtn" class="btn btn-danger" style="margin-top: 12px; width: 100%;">Logout</button>
+          <button type="button" id="profileLogoutBtn" data-logout class="btn btn-danger" style="margin-top: 12px; width: 100%;">Logout</button>
           <div id="profileMessage" class="message" aria-live="polite"></div>
         </form>
       </section>
@@ -67,8 +67,6 @@
 
   <script src="js/global.js"></script>
   <script>
-    var logoutBtn = document.getElementById('logoutBtn');
-    var profileLogoutBtn = document.getElementById('profileLogoutBtn');
     var profilePhoto = document.getElementById('profilePhoto');
     var photoInput = document.getElementById('photoInput');
     var profileUsername = document.getElementById('profileUsername');
@@ -89,14 +87,6 @@
       profileUsername.textContent = loggedInUser;
       usernameInput.value = loggedInUser;
     }
-
-    function performLogout() {
-      localStorage.removeItem('loggedInUser');
-      window.location.href = 'Login.html';
-    }
-
-    logoutBtn.addEventListener('click', performLogout);
-    profileLogoutBtn.addEventListener('click', performLogout);
 
     photoInput.addEventListener('change', function () {
       var file = photoInput.files[0];

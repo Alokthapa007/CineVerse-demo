@@ -19,8 +19,6 @@
 
   <main class="container">
     <section class="hero">
-      <h1>Movie Recommendations</h1>
-      <p>Discover a curated mix of films based on your favorite genres, from action-packed blockbusters to emotional dramas and thrilling sci-fi adventures.</p>
       <nav class="genres" aria-label="Genre filter" id="genreButtons">
         <button class="genre-btn active" data-genre="all">All</button>
         <button class="genre-btn" data-genre="action">Action</button>
@@ -32,20 +30,36 @@
         <button class="genre-btn" data-genre="sci-fi">Sci-Fi</button>
         <button class="genre-btn" data-genre="adventure">Adventure</button>
         <button class="genre-btn" data-genre="animation">Animation</button>
+        <button class="genre-btn" data-genre="anime">Anime</button>
         <button class="genre-btn" data-genre="crime">Crime</button>
+        <button class="genre-btn" data-genre="family">Family</button>
+        <button class="genre-btn" data-genre="fantasy">Fantasy</button>
+        <button class="genre-btn" data-genre="mystery">Mystery</button>
+        <button class="genre-btn" data-genre="documentary">Documentary</button>
+        <button class="genre-btn" data-genre="history">History</button>
+        <button class="genre-btn" data-genre="music">Music</button>
+        <button class="genre-btn" data-genre="war">War</button>
+        <button class="genre-btn" data-genre="western">Western</button>
       </nav>
     </section>
 
     <p class="status" id="statusText" aria-live="polite">Showing all recommended movies.</p>
     <section class="recommendations" id="recommendationList" aria-label="Recommended movies"></section>
+    <div class="pagination" id="recommendationPagination" aria-label="Recommendation pages"></div>
   </main>
 
   <script src="js/global.js"></script>
   <script>
     var genreButtons = document.querySelectorAll('.genre-btn');
     var recommendationList = document.getElementById('recommendationList');
+    var recommendationPagination = document.getElementById('recommendationPagination');
     var statusText = document.getElementById('statusText');
     var logoutBtn = document.getElementById('logoutBtn');
+    var currentGenre = 'all';
+    var currentPage = 1;
+    var pageSize = 9;
+    var filteredMovies = [];
+    var hasMoreMovies = true;
 
     var genreKeywords = {
       'all': ['action', 'comedy', 'drama'],
@@ -58,8 +72,32 @@
       'sci-fi': ['sci-fi', 'dune', 'matrix'],
       'adventure': ['adventure', 'jurassic', 'indiana jones'],
       'animation': ['animation', 'toy story', 'inside out'],
-      'crime': ['crime', 'heat', 'goodfellas']
+      'anime': ['anime'],
+      'crime': ['crime', 'heat', 'goodfellas'],
+      'family': ['family', 'finding nemo', 'homeward bound'],
+      'fantasy': ['fantasy', 'harry potter', 'lord of the rings'],
+      'mystery': ['mystery', 'knives out', 'sherlock holmes'],
+      'documentary': ['documentary', 'nature documentary', 'true story'],
+      'history': ['history', 'historical movie', 'war history'],
+      'music': ['music', 'musical', 'concert film'],
+      'war': ['war', 'saving private ryan', '1917'],
+      'western': ['western', 'true grit', 'the good the bad and the ugly']
     };
+
+    function matchesGenre(movie, genre) {
+      var genreNames = (movie && movie.Genre ? movie.Genre : '').toLowerCase().split(',').map(function (name) {
+        return name.trim();
+      });
+      var expectedGenre = genre === 'sci-fi' ? 'science fiction' : genre === 'anime' ? 'animation' : genre;
+      return genreNames.indexOf(expectedGenre) !== -1;
+    }
+
+    async function fetchGenreMovies(keyword, page) {
+      if (currentGenre === 'anime') {
+        return { Search: await window.CineVerse.fetchAnimeMovies(page) };
+      }
+      return window.CineVerse.fetchMovies(keyword, page);
+    }
 
     function setStatus(text, state) {
       statusText.textContent = text || '';
@@ -118,74 +156,298 @@
       return card;
     }
 
-    async function fetchSearch(keyword) {
-      try {
-        var result = await window.CineVerse.searchMovies(keyword);
-        return result.Search || [];
-      } catch (error) {
-        console.error(error);
-        return [];
+    async function ensureRecommendationPoolForPage(targetPage) {
+      var requiredMovies = targetPage * pageSize;
+      if (filteredMovies.length >= requiredMovies) {
+        return true;
       }
+
+      var keywords = (genreKeywords[currentGenre] || [currentGenre]).slice(0, 2);
+      var allMovies = [];
+      var seen = new Set(filteredMovies.map(function (movie) {
+        return movie && (movie.id || movie.imdbID);
+      }).filter(Boolean));
+      var pageIndex = 1;
+
+      while (filteredMovies.length + allMovies.length < requiredMovies && pageIndex <= 200) {
+        var reachedEnd = true;
+
+        for (var keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
+          var searchResult = await fetchGenreMovies(keywords[keywordIndex], pageIndex);
+          var results = searchResult.Search || [];
+          if (results.length) {
+            reachedEnd = false;
+          }
+
+          for (var movieIndex = 0; movieIndex < results.length; movieIndex++) {
+            var movie = results[movieIndex];
+            var normalizedMovie = window.CineVerse.normalizeMovie(movie);
+            if (!normalizedMovie || (currentGenre !== 'all' && !matchesGenre(normalizedMovie, currentGenre))) {
+              continue;
+            }
+            var id = movie && (movie.id || movie.imdbID);
+            if (!id || seen.has(id)) {
+              continue;
+            }
+            seen.add(id);
+            allMovies.push(movie);
+            if (filteredMovies.length + allMovies.length >= requiredMovies) {
+              break;
+            }
+          }
+
+          if (filteredMovies.length + allMovies.length >= requiredMovies) {
+            break;
+          }
+        }
+
+        if (reachedEnd) {
+          break;
+        }
+
+        pageIndex += 1;
+      }
+
+      var expandedMovies = [];
+      var expandedSeen = new Set();
+
+      filteredMovies.forEach(function (movie) {
+        if (movie && movie.id) {
+          expandedSeen.add(movie.id);
+        }
+        expandedMovies.push(movie);
+      });
+
+      allMovies.forEach(function (movie) {
+        var normalizedMovie = window.CineVerse.normalizeMovie(movie);
+        if (!normalizedMovie) return;
+        var movieId = normalizedMovie.id || normalizedMovie.imdbID;
+        if (!movieId || expandedSeen.has(movieId)) return;
+        if (currentGenre !== 'all' && !matchesGenre(normalizedMovie, currentGenre)) {
+          return;
+        }
+        expandedSeen.add(movieId);
+        expandedMovies.push(normalizedMovie);
+      });
+
+      filteredMovies = expandedMovies;
+      return filteredMovies.length >= ((targetPage - 1) * pageSize) + 1;
     }
 
-    async function fetchDetails(movieId) {
-      try {
-        return await window.CineVerse.fetchMovieDetails(movieId);
-      } catch (error) {
-        console.error(error);
-        return null;
+    function renderPagination(totalPages) {
+      recommendationPagination.innerHTML = '';
+
+      if (totalPages <= 1) {
+        return;
       }
+
+      var previousBtn = document.createElement('button');
+      previousBtn.type = 'button';
+      previousBtn.className = 'page-btn';
+      previousBtn.textContent = 'Previous';
+      previousBtn.disabled = currentPage === 1;
+      previousBtn.addEventListener('click', function () {
+        if (currentPage > 1) {
+          currentPage -= 1;
+          renderCurrentPage();
+        }
+      });
+
+      var pageNumbers = document.createElement('div');
+      pageNumbers.className = 'page-number-group';
+
+      function addPageButton(pageNumber) {
+        var pageBtn = document.createElement('button');
+        pageBtn.type = 'button';
+        pageBtn.className = 'page-number-btn';
+        if (pageNumber === currentPage) {
+          pageBtn.classList.add('active');
+        }
+        pageBtn.textContent = String(pageNumber);
+        pageBtn.addEventListener('click', function () {
+          currentPage = Number(this.textContent);
+          renderCurrentPage();
+        });
+        pageNumbers.appendChild(pageBtn);
+      }
+
+      function addEllipsis() {
+        var ellipsis = document.createElement('span');
+        ellipsis.className = 'page-ellipsis';
+        ellipsis.textContent = '...';
+        ellipsis.setAttribute('aria-hidden', 'true');
+        pageNumbers.appendChild(ellipsis);
+      }
+
+      if (totalPages > 7) {
+        if (currentPage <= 4) {
+          for (var i = 1; i <= 5; i++) {
+            addPageButton(i);
+          }
+          addEllipsis();
+          addPageButton(totalPages);
+        } else if (currentPage >= totalPages - 3) {
+          addPageButton(1);
+          addEllipsis();
+          for (var j = totalPages - 4; j <= totalPages; j++) {
+            addPageButton(j);
+          }
+        } else {
+          addPageButton(1);
+          addEllipsis();
+          for (var k = currentPage - 1; k <= currentPage + 1; k++) {
+            addPageButton(k);
+          }
+          addEllipsis();
+          addPageButton(totalPages);
+        }
+      } else {
+        for (var i = 1; i <= totalPages; i++) {
+          addPageButton(i);
+        }
+      }
+
+      var nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'page-btn';
+      nextBtn.textContent = 'Next';
+      nextBtn.disabled = !hasMoreMovies;
+      nextBtn.addEventListener('click', async function () {
+        var nextPage = currentPage + 1;
+        nextBtn.disabled = true;
+        hasMoreMovies = await ensureRecommendationPoolForPage(nextPage);
+        if (hasMoreMovies) {
+          currentPage = nextPage;
+        }
+        renderCurrentPage();
+      });
+
+      recommendationPagination.appendChild(previousBtn);
+      recommendationPagination.appendChild(pageNumbers);
+      recommendationPagination.appendChild(nextBtn);
+    }
+
+    function getPageMovieCounts(totalMovies, perPage) {
+      var pageCount = Math.max(1, Math.ceil(totalMovies / perPage));
+      var counts = new Array(pageCount).fill(perPage);
+
+      if (totalMovies % perPage !== 0) {
+        counts[pageCount - 1] = totalMovies % perPage;
+      }
+
+      return counts;
+    }
+
+    function renderCurrentPage() {
+      recommendationList.innerHTML = '';
+
+      if (!filteredMovies.length) {
+        recommendationList.innerHTML = '<p class="empty-state">No recommendations found for that genre.</p>';
+        recommendationPagination.innerHTML = '';
+        return;
+      }
+
+      var totalPages = Math.max(1, Math.ceil(filteredMovies.length / pageSize));
+      currentPage = Math.min(currentPage, totalPages);
+      currentPage = Math.max(1, currentPage);
+
+      var pageCounts = getPageMovieCounts(filteredMovies.length, pageSize);
+      var startIndex = 0;
+      for (var i = 0; i < currentPage - 1; i++) {
+        startIndex += pageCounts[i];
+      }
+      var endIndex = startIndex + pageCounts[currentPage - 1];
+      var visibleMovies = filteredMovies.slice(startIndex, endIndex);
+
+      visibleMovies.forEach(function (movie) {
+        if (!movie) return;
+        recommendationList.appendChild(buildRecCard(movie));
+      });
+
+      renderPagination(totalPages);
+
+      setStatus('Showing page ' + currentPage + ' of ' + totalPages + ' for ' + currentGenre + '.', 'success');
     }
 
     async function loadGenreMovies(genreKey) {
       recommendationList.innerHTML = '';
-      var key = genreKey || 'action';
-      setStatus('Loading ' + key + ' movies...');
+      recommendationPagination.innerHTML = '';
+      currentGenre = genreKey || 'all';
+      currentPage = 1;
+      hasMoreMovies = true;
+      setStatus('Loading ' + currentGenre + ' movies...');
 
-      var keywords = (genreKeywords[key] || [key]).slice(0, 2);
+      var keywords = (genreKeywords[currentGenre] || [currentGenre]).slice(0, 2);
       var list = [];
+      var seen = new Set();
+      var pageIndex = 1;
 
-      for (var i = 0; i < keywords.length; i++) {
-        var searchResults = await fetchSearch(keywords[i]);
-        list = list.concat(searchResults);
-        if (list.length >= 12) break;
+      while (list.length < 72 && pageIndex <= 200) {
+        var reachedEnd = true;
+
+        for (var keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
+          var searchResult = await fetchGenreMovies(keywords[keywordIndex], pageIndex);
+          var results = searchResult.Search || [];
+          if (results.length) {
+            reachedEnd = false;
+          }
+
+          for (var resultIndex = 0; resultIndex < results.length; resultIndex++) {
+            var movie = results[resultIndex];
+            var id = movie && (movie.id || movie.imdbID);
+            if (!id || seen.has(id)) {
+              continue;
+            }
+            var normalizedMovie = window.CineVerse.normalizeMovie(movie);
+            if (!normalizedMovie || (currentGenre !== 'all' && !matchesGenre(normalizedMovie, currentGenre))) {
+              continue;
+            }
+            seen.add(id);
+            list.push(normalizedMovie);
+            if (list.length >= 72) {
+              break;
+            }
+          }
+
+          if (list.length >= 72) {
+            break;
+          }
+        }
+
+        if (reachedEnd) {
+          break;
+        }
+
+        pageIndex += 1;
       }
 
       if (!list.length) {
-        setStatus('No recommendations found for ' + key + '.', 'error');
+        setStatus('No recommendations found for ' + currentGenre + '.', 'error');
         recommendationList.innerHTML = '<p class="empty-state">No recommendations found for that genre.</p>';
+        filteredMovies = [];
         return;
       }
 
-      var unique = [];
-      var seen = new Set();
+      filteredMovies = [];
       list.forEach(function (movie) {
-        var id = movie && (movie.id || movie.imdbID);
-        if (!id || seen.has(id)) return;
-        seen.add(id);
-        unique.push(movie);
-      });
-
-      var movies = unique.slice(0, 12);
-      var shown = 0;
-
-      movies.forEach(function (movie) {
         if (!movie) return;
         var item = window.CineVerse.normalizeMovie(movie);
         if (!item) return;
-        if (key !== 'all' && item.Genre && item.Genre.toLowerCase().indexOf(key.toLowerCase()) === -1) {
+        if (currentGenre !== 'all' && !matchesGenre(item, currentGenre)) {
           return;
         }
-        recommendationList.appendChild(buildRecCard(item));
-        shown++;
+        filteredMovies.push(item);
       });
 
-      if (shown === 0) {
-        recommendationList.innerHTML = '<p class="empty-state">No recommendations found for that genre.</p>';
-        setStatus('No recommendations found for ' + key + '.', 'error');
-      } else {
-        setStatus('Showing ' + shown + ' ' + key + ' recommendations.', 'success');
+      if (filteredMovies.length < 5) {
+        recommendationList.innerHTML = '<p class="empty-state">Not enough movies available for this genre.</p>';
+        setStatus('Not enough movies available for ' + currentGenre + '.', 'error');
+        recommendationPagination.innerHTML = '';
+        return;
       }
+
+      currentPage = 1;
+      renderCurrentPage();
     }
 
     function selectGenre(event) {
@@ -197,23 +459,14 @@
         btn.classList.toggle('active', btn.getAttribute('data-genre') === selectedGenre);
       }
 
-      if (selectedGenre === 'all') {
-        loadGenreMovies('action');
-      } else {
-        loadGenreMovies(selectedGenre);
-      }
+      loadGenreMovies(selectedGenre);
     }
 
     for (var k = 0; k < genreButtons.length; k++) {
       genreButtons[k].addEventListener('click', selectGenre);
     }
 
-    logoutBtn.addEventListener('click', function () {
-      localStorage.removeItem('loggedInUser');
-      window.location.href = 'Login.html';
-    });
-
-    loadGenreMovies('action');
+    loadGenreMovies('all');
   </script>
 </body>
 </html>
