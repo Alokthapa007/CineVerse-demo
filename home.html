@@ -20,6 +20,12 @@
   </header>
 
   <main class="container">
+    <form id="movieSearchForm" class="movie-search" role="search">
+      <label class="visually-hidden" for="movieSearchInput">Search movies</label>
+      <input id="movieSearchInput" name="query" type="search" placeholder="Search movies by title..." autocomplete="off" required>
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    <div id="searchResults" class="homepage-sections" aria-live="polite"></div>
     <section class="movies" aria-label="Movie collections">
       <div id="homeMovies" class="homepage-sections" aria-live="polite"></div>
     </section>
@@ -30,6 +36,9 @@
   <script src="js/global.js"></script>
   <script>
     const homeMovies = document.getElementById('homeMovies');
+    const searchForm = document.getElementById('movieSearchForm');
+    const searchInput = document.getElementById('movieSearchInput');
+    const searchResults = document.getElementById('searchResults');
     const movieCacheKey = 'cineverseMovieCache';
     const movieCacheDuration = 1000 * 60 * 60 * 12;
     const displayedMovieIds = new Set();
@@ -257,6 +266,38 @@
         sectionEl.remove();
       }
     }
+
+    searchForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const query = searchInput.value.trim();
+      if (!query) return;
+
+      const submitButton = searchForm.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Searching...';
+      searchResults.innerHTML = '<p class="section-loading">Searching movies...</p>';
+
+      try {
+        const result = await fetchMoviesWithCache(query);
+        if (result.error) {
+          searchResults.innerHTML = '<p class="empty-state">' + result.error + '</p>';
+          return;
+        }
+
+        const movies = (result.Search || []).filter(function (movie) {
+          return window.CineVerse.hasMoviePoster(movie) && movie.imdbID;
+        });
+        const title = document.createElement('span');
+        title.textContent = query;
+        searchResults.innerHTML = '';
+        searchResults.appendChild(createSectionMarkup({ title: 'Search results for "' + title.textContent + '"' }, movies.slice(0, 10)));
+      } catch (error) {
+        searchResults.innerHTML = '<p class="empty-state">Search is unavailable right now. Please try again.</p>';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Search';
+      }
+    });
 
     async function loadMovieHomepage() {
       homeMovies.innerHTML = '';
