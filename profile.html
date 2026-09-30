@@ -19,18 +19,18 @@
 
   <main>
     <section class="profile-head">
-      <aside class="profile-card" aria-labelledby="profileDetailsHeading">
-        <h2 id="profileDetailsHeading">User Details</h2>
-        <figure class="profile-badge">
-          <img id="profilePhoto" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile photo preview">
-        </figure>
-        <dl class="profile-details">
-          <dt>Username</dt>
-          <dd id="profileUsername">Guest</dd>
-        </dl>
-      </aside>
-
       <section class="settings-card" aria-labelledby="editProfileHeading">
+        <header class="profile-editor-identity">
+          <figure class="profile-badge">
+            <img id="profilePhoto" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Current profile photo">
+          </figure>
+          <div class="profile-editor-identity-copy">
+            <p class="profile-editor-label">YOUR ACCOUNT</p>
+            <p class="profile-editor-username" id="profileUsername">Guest</p>
+            <p class="profile-editor-note">Tell the CineVerse community a little about yourself.</p>
+          </div>
+        </header>
+
         <h2 id="editProfileHeading">Edit Profile</h2>
         <form id="profileForm">
           <fieldset>
@@ -43,6 +43,12 @@
             <legend>Update details</legend>
             <label for="usernameInput">Username</label>
             <input type="text" id="usernameInput" placeholder="Enter your username">
+          </fieldset>
+
+          <fieldset>
+            <legend>About you</legend>
+            <label for="bioInput">A short introduction</label>
+            <textarea id="bioInput" maxlength="280" rows="4"></textarea>
           </fieldset>
 
           <fieldset>
@@ -61,7 +67,27 @@
           <button type="button" id="profileLogoutBtn" data-logout class="btn btn-danger" style="margin-top: 12px; width: 100%;">Logout</button>
           <div id="profileMessage" class="message" aria-live="polite"></div>
         </form>
+        <dialog class="site-dialog" id="profileAlertDialog" aria-labelledby="profileAlertHeading">
+          <form method="dialog" class="site-dialog-content">
+            <h2 id="profileAlertHeading">Check your profile details</h2>
+            <p id="profileAlertText"></p>
+            <div class="site-dialog-actions">
+              <button type="button" class="btn btn-primary" id="profileAlertGotIt">Got it</button>
+            </div>
+          </form>
+        </dialog>
       </section>
+    </section>
+
+    <section class="profile-watchlist" aria-labelledby="profileWishlistHeading">
+      <header class="profile-watchlist-header">
+        <div>
+          <p class="profile-watchlist-kicker">SAVED COLLECTION</p>
+          <h2 id="profileWishlistHeading">Your Wishlist</h2>
+        </div>
+        <span class="profile-watchlist-count" id="profileWishlistCount">0 titles</span>
+      </header>
+      <div class="profile-watchlist-grid" id="profileWishlist" aria-live="polite"></div>
     </section>
   </main>
 
@@ -72,20 +98,89 @@
     var profileUsername = document.getElementById('profileUsername');
     var profileForm = document.getElementById('profileForm');
     var profileMessage = document.getElementById('profileMessage');
+    var profileAlertDialog = document.getElementById('profileAlertDialog');
+    var profileAlertText = document.getElementById('profileAlertText');
+    var profileAlertRedirectToLogin = false;
     var usernameInput = document.getElementById('usernameInput');
+    var bioInput = document.getElementById('bioInput');
+    var profileEditorNote = document.querySelector('.profile-editor-note');
+    var pendingProfilePhoto = '';
+    var savedProfilePhoto = '';
     var currentPasswordInput = document.getElementById('currentPasswordInput');
     var newPasswordInput = document.getElementById('newPasswordInput');
     var confirmPasswordInput = document.getElementById('confirmPasswordInput');
+    var profileWishlist = document.getElementById('profileWishlist');
+    var profileWishlistCount = document.getElementById('profileWishlistCount');
+
+    function renderProfileWishlist() {
+      var movies = window.CineVerse.getWatchlist();
+      profileWishlistCount.textContent = movies.length + (movies.length === 1 ? ' title' : ' titles');
+      profileWishlist.innerHTML = '';
+
+      if (!movies.length) {
+        var emptyState = document.createElement('p');
+        emptyState.className = 'profile-wishlist-empty';
+        emptyState.textContent = 'Your wishlist is empty.';
+
+        var recommendationsLink = document.createElement('a');
+        recommendationsLink.href = 'recommendation.html';
+        recommendationsLink.textContent = 'Explore recommendations';
+        emptyState.appendChild(document.createTextNode(' '));
+        emptyState.appendChild(recommendationsLink);
+        profileWishlist.appendChild(emptyState);
+        return;
+      }
+
+      movies.forEach(function (movie) {
+        var movieId = movie.imdbID || movie.id || movie.tmdbId;
+        var card = window.CineVerse.createMovieCard(movie);
+
+        if (movieId) {
+          var movieLink = document.createElement('a');
+          movieLink.className = 'profile-wishlist-link';
+          movieLink.href = 'movie-details.html?id=' + encodeURIComponent(movieId);
+          movieLink.appendChild(card);
+          profileWishlist.appendChild(movieLink);
+        } else {
+          profileWishlist.appendChild(card);
+        }
+      });
+    }
+
+    renderProfileWishlist();
 
     function setProfileMessage(text, type) {
       profileMessage.textContent = text;
       profileMessage.className = 'message ' + (type === 'success' ? 'success' : type === 'error' ? 'error' : '');
     }
 
+    function showProfileAlert(text, redirectToLogin) {
+      profileAlertText.textContent = text;
+      profileAlertRedirectToLogin = !!redirectToLogin;
+      profileAlertDialog.showModal();
+    }
+
+    document.getElementById('profileAlertGotIt').addEventListener('click', function () {
+      profileAlertDialog.close();
+      if (profileAlertRedirectToLogin) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    function renderProfileBio(bio) {
+      profileEditorNote.textContent = bio || 'Tell the CineVerse community a little about yourself.';
+    }
+
     var loggedInUser = localStorage.getItem('loggedInUser');
     if (loggedInUser) {
       profileUsername.textContent = loggedInUser;
       usernameInput.value = loggedInUser;
+      var savedBio = localStorage.getItem('cineverseProfileBio:' + loggedInUser) || '';
+      renderProfileBio(savedBio);
+      savedProfilePhoto = localStorage.getItem('cineverseProfilePhoto:' + loggedInUser) || '';
+      if (savedProfilePhoto) {
+        profilePhoto.src = savedProfilePhoto;
+      }
     }
 
     photoInput.addEventListener('change', function () {
@@ -94,9 +189,25 @@
         return;
       }
 
+      if (!file.type.startsWith('image/')) {
+        showProfileAlert('Choose an image file for your profile photo.');
+        photoInput.value = '';
+        return;
+      }
+
+      if (file.size > 1024 * 1024) {
+        showProfileAlert('Choose an image smaller than 1 MB.');
+        photoInput.value = '';
+        return;
+      }
+
       var reader = new FileReader();
       reader.onload = function (event) {
-        profilePhoto.src = event.target.result;
+        pendingProfilePhoto = event.target.result;
+        profilePhoto.src = pendingProfilePhoto;
+      };
+      reader.onerror = function () {
+        showProfileAlert('This image could not be opened. Choose another file.');
       };
       reader.readAsDataURL(file);
     });
@@ -124,6 +235,8 @@
       event.preventDefault();
 
       var username = usernameInput.value.trim();
+      var bio = bioInput.value.trim();
+      var photoChanged = !!pendingProfilePhoto;
       var currentPassword = currentPasswordInput.value;
       var newPassword = newPasswordInput.value;
       var confirmPassword = confirmPasswordInput.value;
@@ -131,40 +244,47 @@
       var updated = false;
 
       if (!loggedInUser) {
-        alert('Please log in before changing your profile.');
+        showProfileAlert('Please log in before changing your profile.', true);
         return;
       }
 
       var index = findUserIndex(loggedInUser, users);
-      if (index === -1) {
-        alert('Could not find your account.');
+      var hasAccountRecord = index !== -1;
+      var finalUsername = username || loggedInUser;
+      var wantsUsernameChange = finalUsername !== loggedInUser;
+      var wantsPasswordChange = currentPassword || newPassword || confirmPassword;
+
+      if (!hasAccountRecord && (wantsUsernameChange || wantsPasswordChange)) {
+        showProfileAlert('Login details cannot be changed for this account, but you can still update your introduction.');
         return;
       }
 
-      var parts = users[index].split('|');
+      var parts = hasAccountRecord ? users[index].split('|') : [];
       var savedPassword = parts[1] || '';
       var savedEmail = parts[2] || '';
-      var finalUsername = username || loggedInUser;
+      var savedBio = localStorage.getItem('cineverseProfileBio:' + loggedInUser) || '';
+      var finalBio = bio || savedBio;
+      var finalProfilePhoto = pendingProfilePhoto || savedProfilePhoto;
       var finalPassword = savedPassword;
 
-      if (currentPassword || newPassword || confirmPassword) {
+      if (wantsPasswordChange) {
         if (!currentPassword) {
-          alert('Please enter your current password.');
+          showProfileAlert('Please enter your current password.');
           return;
         }
 
         if (!newPassword) {
-          alert('Please enter a new password.');
+          showProfileAlert('Please enter a new password.');
           return;
         }
 
         if (newPassword !== confirmPassword) {
-          alert('New password and confirmation do not match.');
+          showProfileAlert('New password and confirmation do not match.');
           return;
         }
 
         if (savedPassword !== currentPassword) {
-          alert('Current password is incorrect.');
+          showProfileAlert('Current password is incorrect.');
           return;
         }
 
@@ -172,20 +292,46 @@
         updated = true;
       }
 
-      if (username && username !== loggedInUser) {
+      if (wantsUsernameChange) {
+        updated = true;
+      }
+
+      if (finalBio !== savedBio) {
+        updated = true;
+      }
+
+      if (photoChanged) {
         updated = true;
       }
 
       if (updated) {
-        users[index] = [finalUsername, finalPassword, savedEmail].join('|');
-        saveUsers(users);
+        if (finalProfilePhoto && (photoChanged || wantsUsernameChange)) {
+          try {
+            localStorage.setItem('cineverseProfilePhoto:' + finalUsername, finalProfilePhoto);
+          } catch (error) {
+            showProfileAlert('This image could not be saved in browser storage. Choose a smaller image.');
+            return;
+          }
+        }
 
-        if (username && username !== loggedInUser) {
+        if (hasAccountRecord) {
+          users[index] = [finalUsername, finalPassword, savedEmail].join('|');
+          saveUsers(users);
+        }
+        localStorage.setItem('cineverseProfileBio:' + finalUsername, finalBio);
+        renderProfileBio(finalBio);
+
+        if (wantsUsernameChange) {
+          localStorage.removeItem('cineverseProfileBio:' + loggedInUser);
+          localStorage.removeItem('cineverseProfilePhoto:' + loggedInUser);
           profileUsername.textContent = finalUsername;
           localStorage.setItem('loggedInUser', finalUsername);
           loggedInUser = finalUsername;
         }
 
+        savedProfilePhoto = finalProfilePhoto;
+        pendingProfilePhoto = '';
+        photoInput.value = '';
         setProfileMessage('Profile updated successfully.', 'success');
       } else {
         setProfileMessage('No changes were made.', 'error');
@@ -194,6 +340,7 @@
       currentPasswordInput.value = '';
       newPasswordInput.value = '';
       confirmPasswordInput.value = '';
+      bioInput.value = '';
     });
   </script>
 </body>
