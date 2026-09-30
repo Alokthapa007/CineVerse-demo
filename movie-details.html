@@ -108,6 +108,16 @@
       padding-right: 20px;
     }
 
+    .detail-actions .wishlist-toggle {
+      min-width: 160px;
+    }
+
+    .detail-actions .wishlist-toggle[aria-pressed="true"] {
+      color: var(--accent);
+      border-color: rgba(248, 184, 78, 0.32);
+      background: rgba(248, 184, 78, 0.1);
+    }
+
     .movie-credits-wrap {
       margin-top: 28px;
       padding-top: 24px;
@@ -414,41 +424,6 @@
       color: var(--text-secondary);
     }
 
-    .review-delete-dialog {
-      width: min(440px, calc(100% - 32px));
-      padding: 0;
-      border: 1px solid var(--border-strong);
-      border-radius: 12px;
-      background: #101010;
-      color: var(--text-primary);
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
-    }
-
-    .review-delete-dialog::backdrop {
-      background: rgba(0, 0, 0, 0.76);
-      backdrop-filter: blur(3px);
-    }
-
-    .review-delete-content {
-      padding: 24px;
-    }
-
-    .review-delete-content h2 {
-      margin: 0 0 10px;
-      font-size: 1.35rem;
-    }
-
-    .review-delete-content p {
-      margin: 0 0 22px;
-      color: var(--text-secondary);
-    }
-
-    .review-delete-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
     @media (max-width: 760px) {
       .movie-detail-card {
         grid-template-columns: 1fr;
@@ -604,6 +579,7 @@
         '    </div>',
         '    <div class="detail-actions">',
         '      <a class="btn btn-secondary" href="home.html">Back to Home</a>',
+        '      <button class="btn btn-secondary wishlist-toggle" id="movieWishlistButton" type="button" aria-pressed="false">Add to Wishlist</button>',
         '      <a class="btn btn-primary" href="recommendation.html">Browse Recommendations</a>',
         '    </div>',
         '  </div>',
@@ -659,17 +635,35 @@
         '    </div>',
         '  </div>',
         '</section>',
-        '<dialog class="review-delete-dialog" id="reviewDeleteDialog" aria-labelledby="reviewDeleteHeading">',
-        '  <form method="dialog" class="review-delete-content">',
+        '<dialog class="site-dialog review-delete-dialog" id="reviewDeleteDialog" aria-labelledby="reviewDeleteHeading">',
+        '  <form method="dialog" class="site-dialog-content review-delete-content">',
         '    <h2 id="reviewDeleteHeading">Delete review?</h2>',
         '    <p>This will permanently remove your review and rating.</p>',
-        '    <div class="review-delete-actions">',
+        '    <div class="site-dialog-actions review-delete-actions">',
         '      <button class="btn btn-secondary" type="submit" value="cancel" autofocus>Cancel</button>',
         '      <button class="btn btn-danger" id="confirmReviewDelete" type="button">Delete</button>',
         '    </div>',
         '  </form>',
         '</dialog>'
       ].join('');
+
+      const wishlistMovieId = movie.imdbID || movie.id || movie.tmdbId;
+      const wishlistButton = document.getElementById('movieWishlistButton');
+      const updateWishlistButton = function () {
+        const isSaved = window.CineVerse.isInWatchlist(wishlistMovieId);
+        wishlistButton.setAttribute('aria-pressed', String(isSaved));
+        wishlistButton.textContent = isSaved ? 'In Wishlist' : 'Add to Wishlist';
+      };
+
+      updateWishlistButton();
+      wishlistButton.addEventListener('click', function () {
+        if (window.CineVerse.isInWatchlist(wishlistMovieId)) {
+          window.CineVerse.removeFromWatchlist(wishlistMovieId);
+        } else {
+          window.CineVerse.addToWatchlist(movie);
+        }
+        updateWishlistButton();
+      });
 
       renderMoviePeople(document.getElementById('movieDirectorCards'), directors, 'Director');
       renderMoviePeople(document.getElementById('movieCastCards'), cast, 'Actor');

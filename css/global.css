@@ -312,10 +312,6 @@ p {
   color: var(--danger);
 }
 
-.hidden-panel {
-  display: none !important;
-}
-
 .empty-state {
   padding: 20px;
   color: var(--text-secondary);
@@ -405,45 +401,39 @@ p {
   border-color: var(--border);
 }
 
-.logout-confirm-dialog {
+.site-dialog {
   width: min(440px, calc(100% - 32px));
   padding: 0;
   border: 1px solid var(--border-strong);
-  border-radius: 12px;
-  background: #101010;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, #171717, #0b0b0b);
   color: var(--text-primary);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
 }
 
-.logout-confirm-dialog::backdrop {
+.site-dialog::backdrop {
   background: rgba(0, 0, 0, 0.76);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
 }
 
-.logout-confirm-content {
+.site-dialog-content {
   padding: 24px;
 }
 
-.logout-confirm-content h2 {
+.site-dialog-content h2 {
   margin: 0 0 10px;
   font-size: 1.35rem;
 }
 
-.logout-confirm-content p {
+.site-dialog-content p {
   margin: 0 0 22px;
   color: var(--text-secondary);
 }
 
-.logout-confirm-actions {
+.site-dialog-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--text-primary);
-  border-color: var(--border-strong);
 }
 
 .hero {
@@ -468,7 +458,6 @@ p {
 .hero,
 .movie-card,
 .review-card,
-.profile-card,
 .settings-card,
 .recommendation-card,
 .auth-card,
@@ -647,15 +636,13 @@ p {
 
 .profile-head {
   display: grid;
-  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-  gap: 0;
+  grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
-  width: 100%;
-  max-width: 1200px;
+  width: 92%;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
-.profile-card,
 .settings-card {
   background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(8, 8, 8, 0.98));
   border: 1px solid var(--border);
@@ -665,12 +652,6 @@ p {
   height: 100%;
 }
 
-.profile-card {
-  padding: 26px 22px;
-  text-align: center;
-}
-
-.profile-card h2,
 .settings-card h2 {
   margin: 0 0 18px;
   font-size: clamp(1.6rem, 3vw, 2rem);
@@ -694,26 +675,113 @@ p {
   object-fit: cover;
 }
 
-.profile-details {
+.profile-editor-identity {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding-bottom: 24px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-editor-identity .profile-badge {
+  width: 112px;
+  height: 112px;
+  flex: 0 0 112px;
   margin: 0;
-  padding: 0;
-  color: var(--text-secondary);
-  line-height: 1.8;
-  font-size: 0.98rem;
 }
 
-.profile-details dt {
-  font-weight: 700;
+.profile-editor-label {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.profile-editor-username {
+  margin: 0;
   color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 750;
+  line-height: 1.2;
 }
 
-.profile-details dd {
-  margin: 0 0 12px;
-  padding: 0;
+.profile-editor-note {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
 }
 
 .settings-card {
   padding: 26px 24px;
+}
+
+.profile-watchlist {
+  width: min(1200px, 92%);
+  margin: 42px auto 64px;
+}
+
+.profile-watchlist-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-watchlist-kicker {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.profile-watchlist-header h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+}
+
+.profile-watchlist-count {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.profile-watchlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 18px;
+}
+
+.profile-wishlist-link {
+  display: block;
+  min-width: 0;
+  color: inherit;
+}
+
+.profile-wishlist-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.profile-wishlist-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.profile-wishlist-empty a {
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .settings-card fieldset {
@@ -911,24 +979,6 @@ footer.site-footer {
   font-size: 0.95rem;
 }
 
-.hero-content {
-  position: relative;
-  z-index: 1;
-}
-
-.hero-title {
-  margin: 0 0 12px;
-  font-size: clamp(2.3rem, 5vw, 4rem);
-  letter-spacing: -0.05em;
-}
-
-.hero-description {
-  margin: 0;
-  max-width: 720px;
-  color: var(--text-secondary);
-  font-size: 1.08rem;
-}
-
 .movie-card-content {
   display: flex;
   flex: 1;
@@ -956,29 +1006,6 @@ footer.site-footer {
   font-weight: 700;
 }
 
-.review-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: auto;
-}
-
-.review-actions .btn {
-  width: 100%;
-  margin-top: 4px;
-}
-
-.form-group {
-  margin-bottom: 18px;
-}
-
-.label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -1004,19 +1031,11 @@ textarea {
   min-height: 120px;
 }
 
-.form-card,
-.review-card,
-.watchlist-card,
-.profile-card,
-.profile-section {
+.review-card {
   background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(8, 8, 8, 0.98));
   border: 1px solid var(--border);
   border-radius: 20px;
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.2);
-}
-
-.review-card {
-  padding: 20px;
 }
 
 .review-header {
@@ -1043,13 +1062,6 @@ textarea {
   line-height: 1.7;
 }
 
-.review-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 14px;
-}
-
 .genre-btn {
   background: rgba(18, 18, 18, 0.9);
   color: var(--text-primary);
@@ -1065,56 +1077,11 @@ textarea {
   border-color: var(--border-strong);
 }
 
-.watchlist-card {
-  padding: 14px;
-}
-
-.empty-state,
-.loading,
-.error-message {
+.empty-state {
   padding: 24px 18px;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.02);
-  color: var(--text-secondary);
-}
-
-.error-message {
-  color: #fca5a5;
-}
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 22px;
-}
-
-.profile-avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--border);
-  background: #121212;
-}
-
-.profile-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.profile-stat {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
   color: var(--text-secondary);
 }
 
@@ -1131,16 +1098,20 @@ textarea {
     padding: 16px 20px;
   }
 
+  .profile-head {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(1200px, 92%);
+    gap: 16px;
+  }
+
+  .settings-card {
+    height: auto;
+  }
+
   .site-nav {
     position: static;
     transform: none;
     width: 100%;
-    justify-content: center;
-  }
-
-  .nav-toggle {
-    display: inline-flex;
-    align-items: center;
     justify-content: center;
   }
 
@@ -1156,6 +1127,25 @@ textarea {
 @media (max-width: 620px) {
   .container {
     width: 92%;
+  }
+
+  .profile-watchlist-header {
+    align-items: center;
+  }
+
+  .profile-editor-identity {
+    gap: 14px;
+  }
+
+  .profile-editor-identity .profile-badge {
+    width: 88px;
+    height: 88px;
+    flex-basis: 88px;
+  }
+
+  .profile-watchlist-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .site-nav {

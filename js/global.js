@@ -94,11 +94,11 @@
     if (!logoutButtons.length) return;
 
     const dialog = document.createElement('dialog');
-    dialog.className = 'logout-confirm-dialog';
+    dialog.className = 'site-dialog logout-confirm-dialog';
     dialog.setAttribute('aria-labelledby', 'logoutConfirmTitle');
 
     const content = document.createElement('div');
-    content.className = 'logout-confirm-content';
+    content.className = 'site-dialog-content logout-confirm-content';
 
     const title = document.createElement('h2');
     title.id = 'logoutConfirmTitle';
@@ -108,7 +108,7 @@
     message.textContent = 'Are you sure you want to log out of CineVerse?';
 
     const actions = document.createElement('div');
-    actions.className = 'logout-confirm-actions';
+    actions.className = 'site-dialog-actions logout-confirm-actions';
 
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
@@ -125,7 +125,7 @@
     confirmButton.textContent = 'Log out';
     confirmButton.addEventListener('click', function () {
       localStorage.removeItem('loggedInUser');
-      window.location.href = 'Login.html';
+      window.location.href = 'index.html';
     });
 
     actions.appendChild(cancelButton);
@@ -165,7 +165,7 @@
 
   function buildImageUrl(path, baseUrl) {
     if (!path || !baseUrl) return getPosterFallback();
-    if (typeof path === 'string' && /^https?:\/\//i.test(path)) {
+    if (typeof path === 'string' && (/^https?:\/\//i.test(path) || /^data:image\//i.test(path))) {
       return path;
     }
     return baseUrl + path;
@@ -540,7 +540,7 @@
 
   function setPageMeta() {
     const page = getCurrentPageName();
-    if (page === 'login.html' || page === 'signup.html' || page === 'reset-password.html') {
+    if (page === 'index.html' || page === 'signup.html' || page === 'reset-password.html') {
       document.body.classList.add('auth-page');
     }
   }
