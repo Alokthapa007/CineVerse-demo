@@ -8,7 +8,10 @@
 </head>
 <body class="auth-page">
   <div class="auth-shell">
-    <div class="auth-brand" role="banner" aria-label="CineVerse brand">CineVerse</div>
+    <div class="auth-brand" role="banner" aria-label="CineVerse brand">
+      <img src="assets/cineverse-logo.svg" alt="">
+      <span>CineVerse</span>
+    </div>
 
     <main class="auth-card wide">
       <section aria-labelledby="signupTitle">
@@ -74,6 +77,12 @@
 
       if (username.length < 3) {
         signupMessage.textContent = 'Username must be at least 3 characters.';
+        signupMessage.className = 'auth-message error';
+        return;
+      }
+
+      if (username.toLowerCase() === 'demo') {
+        signupMessage.textContent = 'The demo username is reserved for testing.';
         signupMessage.className = 'auth-message error';
         return;
       }

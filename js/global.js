@@ -5,16 +5,28 @@
   const TMDB_BACKDROP_BASE = 'https://image.tmdb.org/t/p/original';
   const TMDB_GENRE_IDS = {
     action: 28,
+    adventure: 12,
+    animation: 16,
     comedy: 35,
+    crime: 80,
+    documentary: 99,
     drama: 18,
+    family: 10751,
+    fantasy: 14,
+    history: 36,
     horror: 27,
+    music: 10402,
+    mystery: 9648,
     romance: 10749,
     thriller: 53,
     'sci-fi': 878,
-    adventure: 12,
-    animation: 16,
-    crime: 80
+    war: 10752,
+    western: 37
   };
+  const TMDB_GENRE_NAMES_BY_ID = Object.keys(TMDB_GENRE_IDS).reduce(function (names, genre) {
+    names[TMDB_GENRE_IDS[genre]] = genre === 'sci-fi' ? 'Science Fiction' : genre.charAt(0).toUpperCase() + genre.slice(1);
+    return names;
+  }, {});
 
   function getCurrentPageName() {
     const path = window.location.pathname.split('/').pop() || 'index.html';
@@ -32,6 +44,21 @@
     ];
 
     const currentPage = getCurrentPageName();
+    const logoutBtn = document.getElementById('logoutBtn');
+    const brand = document.createElement('a');
+    brand.href = 'home.html';
+    brand.className = 'brand';
+    brand.setAttribute('aria-label', 'CineVerse homepage');
+
+    const logo = document.createElement('img');
+    logo.src = 'assets/cineverse-logo.svg';
+    logo.alt = '';
+
+    const wordmark = document.createElement('span');
+    wordmark.textContent = 'CineVerse';
+    brand.appendChild(logo);
+    brand.appendChild(wordmark);
+
     const nav = document.createElement('nav');
     nav.className = 'site-nav';
     nav.setAttribute('aria-label', 'Main navigation');
@@ -49,11 +76,11 @@
 
     navContainer.dataset.initialized = 'true';
     navContainer.innerHTML = '';
+    navContainer.appendChild(brand);
     navContainer.appendChild(nav);
-
-    const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
       logoutBtn.classList.add('btn', 'btn-danger');
+      navContainer.appendChild(logoutBtn);
     }
 
     const profileBtn = document.getElementById('profileBtn');
@@ -63,21 +90,60 @@
   }
 
   function bindLogoutButtons() {
-    document.querySelectorAll('[data-logout]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        localStorage.removeItem('loggedInUser');
-        window.location.href = 'Login.html';
-      });
+    const logoutButtons = document.querySelectorAll('#logoutBtn, [data-logout]');
+    if (!logoutButtons.length) return;
+
+    const dialog = document.createElement('dialog');
+    dialog.className = 'logout-confirm-dialog';
+    dialog.setAttribute('aria-labelledby', 'logoutConfirmTitle');
+
+    const content = document.createElement('div');
+    content.className = 'logout-confirm-content';
+
+    const title = document.createElement('h2');
+    title.id = 'logoutConfirmTitle';
+    title.textContent = 'Log out?';
+
+    const message = document.createElement('p');
+    message.textContent = 'Are you sure you want to log out of CineVerse?';
+
+    const actions = document.createElement('div');
+    actions.className = 'logout-confirm-actions';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.className = 'btn btn-secondary';
+    cancelButton.textContent = 'Cancel';
+    cancelButton.autofocus = true;
+    cancelButton.addEventListener('click', function () {
+      dialog.close();
     });
 
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn && !logoutBtn.dataset.logoutBound) {
-      logoutBtn.dataset.logoutBound = 'true';
-      logoutBtn.addEventListener('click', function () {
-        localStorage.removeItem('loggedInUser');
-        window.location.href = 'Login.html';
+    const confirmButton = document.createElement('button');
+    confirmButton.type = 'button';
+    confirmButton.className = 'btn btn-danger';
+    confirmButton.textContent = 'Log out';
+    confirmButton.addEventListener('click', function () {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'Login.html';
+    });
+
+    actions.appendChild(cancelButton);
+    actions.appendChild(confirmButton);
+    content.appendChild(title);
+    content.appendChild(message);
+    content.appendChild(actions);
+    dialog.appendChild(content);
+    document.body.appendChild(dialog);
+
+    logoutButtons.forEach(function (btn) {
+      if (btn.dataset.logoutConfirmBound === 'true') return;
+      btn.dataset.logoutConfirmBound = 'true';
+      btn.addEventListener('click', function (event) {
+        event.preventDefault();
+        dialog.showModal();
       });
-    }
+    });
   }
 
   function getPosterFallback() {
@@ -108,7 +174,8 @@
   function mapGenres(genreList) {
     if (Array.isArray(genreList) && genreList.length) {
       return genreList.map(function (entry) {
-        return entry && entry.name ? entry.name : '';
+        if (entry && entry.name) return entry.name;
+        return TMDB_GENRE_NAMES_BY_ID[entry] || '';
       }).filter(Boolean).join(', ');
     }
 
@@ -157,6 +224,12 @@
       Awards: movie.Awards || 'N/A',
       backdrop: movie.backdrop_path ? buildImageUrl(movie.backdrop_path, TMDB_BACKDROP_BASE) : posterUrl
     };
+  }
+
+  function hasMoviePoster(movie) {
+    if (!movie) return false;
+    if (typeof movie.poster_path === 'string' && movie.poster_path.trim()) return true;
+    return typeof movie.Poster === 'string' && movie.Poster !== 'N/A' && !movie.Poster.startsWith('data:image/svg+xml');
   }
 
   function createMovieCard(movie) {
@@ -257,11 +330,23 @@
     localStorage.setItem('cineverseReviews', JSON.stringify(reviews));
   }
 
+  function updateReview(movieId, reviewIndex, review) {
+    const reviews = getReviews();
+    if (!movieId || !review || !Array.isArray(reviews[movieId]) || !Number.isInteger(reviewIndex) || reviewIndex < 0 || reviewIndex >= reviews[movieId].length) {
+      return false;
+    }
+
+    reviews[movieId][reviewIndex] = review;
+    localStorage.setItem('cineverseReviews', JSON.stringify(reviews));
+    return true;
+  }
+
   function deleteReview(movieId, reviewIndex) {
     const reviews = getReviews();
-    if (!reviews[movieId]) return;
+    if (!Array.isArray(reviews[movieId]) || !Number.isInteger(reviewIndex) || reviewIndex < 0 || reviewIndex >= reviews[movieId].length) return false;
     reviews[movieId].splice(reviewIndex, 1);
     localStorage.setItem('cineverseReviews', JSON.stringify(reviews));
+    return true;
   }
 
   async function fetchTMDB(endpoint, params) {
@@ -291,7 +376,7 @@
 
     try {
       const data = await fetchTMDB('/search/movie', { query: searchTerm, page: page || 1 });
-      const results = Array.isArray(data.results) ? data.results.map(normalizeMovie).filter(Boolean) : [];
+      const results = Array.isArray(data.results) ? data.results.map(normalizeMovie).filter(hasMoviePoster) : [];
       return {
         Search: results,
         totalResults: Number(data.total_results || results.length || 0),
@@ -299,6 +384,21 @@
       };
     } catch (error) {
       return { Search: [], totalResults: 0, error: 'Unable to search movies right now.' };
+    }
+  }
+
+  async function fetchAnimeMovies(page) {
+    try {
+      const data = await fetchTMDB('/discover/movie', {
+        with_genres: TMDB_GENRE_IDS.animation,
+        with_original_language: 'ja',
+        sort_by: 'popularity.desc',
+        page: page || 1
+      });
+      return Array.isArray(data && data.results) ? data.results.map(normalizeMovie).filter(hasMoviePoster) : [];
+    } catch (error) {
+      console.warn('Anime movie lookup failed:', error);
+      return [];
     }
   }
 
@@ -310,6 +410,27 @@
 
     const data = await fetchTMDB('/movie/' + encodeURIComponent(id));
     return normalizeMovie(data);
+  }
+
+  async function fetchMovieCredits(movieId) {
+    const id = movieId || '';
+    if (!id) return { directors: [], cast: [] };
+
+    try {
+      const data = await fetchTMDB('/movie/' + encodeURIComponent(id) + '/credits');
+      const crew = Array.isArray(data && data.crew) ? data.crew : [];
+      const cast = Array.isArray(data && data.cast) ? data.cast : [];
+      const directorIds = new Set();
+      const directors = crew.filter(function (person) {
+        if (!person || person.job !== 'Director' || directorIds.has(person.id)) return false;
+        directorIds.add(person.id);
+        return true;
+      });
+      return { directors: directors, cast: cast.filter(function (person) { return person && person.name; }).slice(0, 8) };
+    } catch (error) {
+      console.warn('Movie credits lookup failed:', error);
+      return { directors: [], cast: [] };
+    }
   }
 
   async function fetchMovieTrailer(movieId) {
@@ -336,6 +457,22 @@
     } catch (error) {
       console.warn('Trailer lookup failed:', error);
       return null;
+    }
+  }
+
+  async function fetchSimilarMovies(movieId) {
+    const id = movieId || '';
+    if (!id) return [];
+
+    try {
+      const data = await fetchTMDB('/movie/' + encodeURIComponent(id) + '/recommendations', { page: 1 });
+      const results = Array.isArray(data && data.results) ? data.results : [];
+      return results.map(normalizeMovie).filter(function (movie) {
+        return hasMoviePoster(movie) && String(movie.id) !== String(id);
+      }).slice(0, 8);
+    } catch (error) {
+      console.warn('Similar movies lookup failed:', error);
+      return [];
     }
   }
 
@@ -384,7 +521,7 @@
       }
 
       const results = Array.isArray(data && data.results) ? data.results : [];
-      let movies = results.map(normalizeMovie).filter(Boolean);
+      let movies = results.map(normalizeMovie).filter(hasMoviePoster);
 
       if (section && section.sort === 'rating') {
         movies = movies.sort(function (a, b) {
@@ -420,10 +557,14 @@
     TMDB_BACKDROP_BASE: TMDB_BACKDROP_BASE,
     createMovieCard: createMovieCard,
     normalizeMovie: normalizeMovie,
+    hasMoviePoster: hasMoviePoster,
     fetchTMDB: fetchTMDB,
     fetchMovies: fetchMovies,
+    fetchAnimeMovies: fetchAnimeMovies,
     fetchMovieDetails: fetchMovieDetails,
+    fetchMovieCredits: fetchMovieCredits,
     fetchMovieTrailer: fetchMovieTrailer,
+    fetchSimilarMovies: fetchSimilarMovies,
     searchMovies: searchMovies,
     fetchSectionMovies: fetchSectionMovies,
     getWatchlist: getWatchlist,
@@ -432,6 +573,7 @@
     isInWatchlist: isInWatchlist,
     getReviews: getReviews,
     saveReview: saveReview,
+    updateReview: updateReview,
     deleteReview: deleteReview,
     getPosterFallback: getPosterFallback
   };

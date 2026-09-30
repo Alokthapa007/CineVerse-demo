@@ -108,8 +108,82 @@
       padding-right: 20px;
     }
 
-    .movie-trailer-wrap {
+    .movie-credits-wrap {
       margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .movie-credits-wrap > h2 {
+      margin: 0 0 18px;
+      font-size: clamp(1.5rem, 2vw, 2.1rem);
+    }
+
+    .movie-credit-columns {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) minmax(0, 2fr);
+      gap: 24px;
+    }
+
+    .movie-credit-group h3 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+    }
+
+    .movie-person-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .movie-person-card {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .movie-person-photo,
+    .movie-person-placeholder {
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 72px;
+      border-radius: 4px;
+      background: #1b1b1b;
+    }
+
+    .movie-person-photo {
+      object-fit: cover;
+    }
+
+    .movie-person-placeholder {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .movie-person-name {
+      margin: 0 0 4px;
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .movie-person-role {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .movie-trailer-wrap {
+      min-width: 0;
       background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(8, 8, 8, 0.98));
       border: 1px solid var(--border);
       border-radius: 24px;
@@ -117,7 +191,16 @@
       box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
     }
 
-    .movie-trailer-wrap h2 {
+    .trailer-related-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(260px, 0.9fr);
+      align-items: stretch;
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .movie-trailer-wrap h2,
+    .related-movies-wrap h2 {
       margin: 0 0 16px;
       font-size: clamp(1.5rem, 2vw, 2.1rem);
     }
@@ -140,6 +223,232 @@
       border: 0;
     }
 
+    .related-movies-wrap {
+      min-width: 0;
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(8, 8, 8, 0.98));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+    }
+
+    .related-movie-list {
+      display: grid;
+      gap: 12px;
+      max-height: clamp(280px, calc(50vw - 190px), 460px);
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .related-movie {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    .related-movie:hover,
+    .related-movie:focus-visible {
+      border-color: var(--border-strong);
+      background: rgba(255, 255, 255, 0.05);
+      outline: none;
+    }
+
+    .related-movie img {
+      width: 72px;
+      height: 104px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #111;
+    }
+
+    .related-movie-title {
+      margin: 0 0 6px;
+      color: var(--text-primary);
+      font-size: 0.96rem;
+      line-height: 1.35;
+    }
+
+    .related-movie-meta,
+    .related-movie-rating {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.84rem;
+    }
+
+    .related-movie-rating {
+      margin-top: 6px;
+      color: var(--accent);
+    }
+
+    .movie-reviews-wrap {
+      margin-top: 28px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+
+    .movie-reviews-wrap > h2 {
+      margin: 0 0 18px;
+      font-size: clamp(1.5rem, 2vw, 2.1rem);
+    }
+
+    .movie-reviews-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.5fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .movie-review-form {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .movie-review-form label,
+    .rating-fieldset legend {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .rating-fieldset {
+      border: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .rating-fieldset legend {
+      margin-bottom: 8px;
+    }
+
+    .star-rating {
+      display: inline-flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .star-rating input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+
+    .star-rating label {
+      color: var(--text-muted);
+      font-size: 1.8rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .star-rating input:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+      color: var(--accent);
+    }
+
+    .star-rating input:focus-visible + label {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .movie-review-form textarea {
+      min-height: 112px;
+    }
+
+    .movie-review-status {
+      min-height: 1.5em;
+      margin: 0;
+      color: var(--text-secondary);
+    }
+
+    .movie-review-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .movie-review-list .review-card {
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    .movie-review-list .review-date {
+      display: block;
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .movie-review-form-actions,
+    .movie-review-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .movie-review-form-actions .btn,
+    .movie-review-actions .btn {
+      min-height: 36px;
+      padding: 0.5rem 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    .movie-review-actions {
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+
+    .movie-review-summary {
+      margin: 0 0 14px;
+      color: var(--text-secondary);
+    }
+
+    .review-delete-dialog {
+      width: min(440px, calc(100% - 32px));
+      padding: 0;
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      background: #101010;
+      color: var(--text-primary);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+    }
+
+    .review-delete-dialog::backdrop {
+      background: rgba(0, 0, 0, 0.76);
+      backdrop-filter: blur(3px);
+    }
+
+    .review-delete-content {
+      padding: 24px;
+    }
+
+    .review-delete-content h2 {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+    }
+
+    .review-delete-content p {
+      margin: 0 0 22px;
+      color: var(--text-secondary);
+    }
+
+    .review-delete-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
     @media (max-width: 760px) {
       .movie-detail-card {
         grid-template-columns: 1fr;
@@ -148,12 +457,31 @@
       .movie-detail-poster {
         min-height: 320px;
       }
+
+      .movie-reviews-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .movie-credit-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .trailer-related-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .related-movie-list {
+        max-height: clamp(260px, 65vw, 360px);
+      }
     }
   </style>
 </head>
 <body>
   <header class="site-header" data-navbar>
     <div class="brand">CineVerse</div>
+    <button id="logoutBtn" class="btn btn-danger" type="button">Logout</button>
   </header>
 
   <main class="container movie-detail-page">
@@ -163,21 +491,8 @@
   <script src="js/global.js"></script>
   <script>
     const detailContainer = document.getElementById('movieDetailContent');
-
-    function getPosterFallback() {
-      const svg = [
-        '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450">',
-        '<defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#151515"/><stop offset="100%" stop-color="#2a2a2a"/></linearGradient></defs>',
-        '<rect width="300" height="450" fill="url(#bg)"/>',
-        '<rect x="30" y="40" width="240" height="310" rx="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)"/>',
-        '<circle cx="150" cy="160" r="56" fill="rgba(255,255,255,0.08)"/>',
-        '<path d="M121 188h58c18 0 33 15 33 33v49H88v-49c0-18 15-33 33-33z" fill="rgba(255,255,255,0.08)"/>',
-        '<path d="M85 290h130l-18 54H103z" fill="rgba(255,255,255,0.08)"/>',
-        '<text x="150" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#e5e7eb" font-weight="700">Movie poster</text>',
-        '</svg>'
-      ].join('');
-      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
-    }
+    let editingReviewIndex = null;
+    let pendingReviewDeleteIndex = null;
 
     function buildTrailerEmbedUrl(videoKey) {
       const key = typeof videoKey === 'string' ? videoKey.trim() : '';
@@ -187,17 +502,74 @@
       return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(key) + '?autoplay=0&rel=0&modestbranding=1';
     }
 
-    function renderMovieDetail(movie) {
+    function renderMoviePeople(container, people, defaultRole) {
+      if (!people || !people.length) {
+        const empty = document.createElement('p');
+        empty.className = 'empty-state';
+        empty.textContent = 'No ' + defaultRole.toLowerCase() + ' information is available.';
+        container.appendChild(empty);
+        return;
+      }
+
+      people.forEach(function (person) {
+        const card = document.createElement('article');
+        card.className = 'movie-person-card';
+
+        const initials = (person.name || '?').split(/\s+/).map(function (part) {
+          return part.charAt(0);
+        }).slice(0, 2).join('').toUpperCase();
+        if (person.profile_path) {
+          const image = document.createElement('img');
+          image.className = 'movie-person-photo';
+          image.src = window.CineVerse.TMDB_IMAGE_BASE + person.profile_path;
+          image.alt = person.name + ' portrait';
+          image.loading = 'lazy';
+          image.decoding = 'async';
+          image.onerror = function () {
+            const placeholder = document.createElement('span');
+            placeholder.className = 'movie-person-placeholder';
+            placeholder.textContent = initials;
+            this.replaceWith(placeholder);
+          };
+          card.appendChild(image);
+        } else {
+          const placeholder = document.createElement('span');
+          placeholder.className = 'movie-person-placeholder';
+          placeholder.textContent = initials;
+          card.appendChild(placeholder);
+        }
+
+        const details = document.createElement('div');
+        const name = document.createElement('h4');
+        name.className = 'movie-person-name';
+        name.textContent = person.name || 'Unknown';
+        const role = document.createElement('p');
+        role.className = 'movie-person-role';
+        role.textContent = person.character || defaultRole;
+        details.appendChild(name);
+        details.appendChild(role);
+        card.appendChild(details);
+        container.appendChild(card);
+      });
+    }
+
+    function renderMovieDetail(movie, relatedMovies, credits) {
       if (!movie) {
         detailContainer.innerHTML = '<div class="empty-state">Movie details are not available right now.</div>';
         return;
       }
 
-      const poster = movie.Poster && movie.Poster !== 'N/A' ? movie.Poster : getPosterFallback();
+      const poster = movie.Poster && movie.Poster !== 'N/A' ? movie.Poster : window.CineVerse.getPosterFallback();
       const genres = movie.Genre || 'N/A';
-      const director = movie.Director || 'N/A';
+      const directors = credits && Array.isArray(credits.directors) ? credits.directors : [];
+      const cast = credits && Array.isArray(credits.cast) ? credits.cast : [];
+      const director = movie.Director && movie.Director !== 'N/A'
+        ? movie.Director
+        : directors.map(function (person) { return person.name; }).join(', ') || 'N/A';
       const writer = movie.Writer || 'N/A';
-      const actors = movie.Actors || 'N/A';
+      const actors = movie.Actors && movie.Actors !== 'N/A'
+        ? movie.Actors
+        : cast.slice(0, 5).map(function (person) { return person.name; }).join(', ') || 'N/A';
       const language = movie.Language || 'N/A';
       const awards = movie.Awards || 'N/A';
       const runtime = movie.Runtime || 'N/A';
@@ -236,11 +608,292 @@
         '    </div>',
         '  </div>',
         '</article>',
-        '<section class="movie-trailer-wrap">',
-        '  <h2>Official Trailer</h2>',
+        '<section class="movie-credits-wrap" aria-labelledby="movieCreditsHeading">',
+        '  <h2 id="movieCreditsHeading">Cast & Crew</h2>',
+        '  <div class="movie-credit-columns">',
+        '    <section class="movie-credit-group" aria-labelledby="movieDirectorHeading">',
+        '      <h3 id="movieDirectorHeading">Director</h3>',
+        '      <div class="movie-person-grid" id="movieDirectorCards"></div>',
+        '    </section>',
+        '    <section class="movie-credit-group" aria-labelledby="movieCastHeading">',
+        '      <h3 id="movieCastHeading">Cast</h3>',
+        '      <div class="movie-person-grid" id="movieCastCards"></div>',
+        '    </section>',
+        '  </div>',
+        '</section>',
+        '<section class="trailer-related-layout" aria-label="Movie trailer and related movies">',
+        '  <section class="movie-trailer-wrap">',
+        '    <h2>Official Trailer</h2>',
         trailerMarkup,
-        '</section>'
+        '  </section>',
+        '  <aside class="related-movies-wrap" aria-labelledby="relatedMoviesHeading">',
+        '    <h2 id="relatedMoviesHeading">More like this</h2>',
+        '    <div class="related-movie-list" id="relatedMovieList"></div>',
+        '  </aside>',
+        '</section>',
+        '<section class="movie-reviews-wrap" aria-labelledby="movieReviewsHeading">',
+        '  <h2 id="movieReviewsHeading">Reviews and ratings</h2>',
+        '  <div class="movie-reviews-layout">',
+        '    <form class="movie-review-form" id="movieReviewForm">',
+        '      <fieldset class="rating-fieldset">',
+        '        <legend>Your rating</legend>',
+        '        <div class="star-rating" role="radiogroup" aria-label="Rate this movie">',
+        '          <input id="reviewRating5" type="radio" name="reviewRating" value="5" required><label for="reviewRating5" aria-label="5 stars">★</label>',
+        '          <input id="reviewRating4" type="radio" name="reviewRating" value="4"><label for="reviewRating4" aria-label="4 stars">★</label>',
+        '          <input id="reviewRating3" type="radio" name="reviewRating" value="3"><label for="reviewRating3" aria-label="3 stars">★</label>',
+        '          <input id="reviewRating2" type="radio" name="reviewRating" value="2"><label for="reviewRating2" aria-label="2 stars">★</label>',
+        '          <input id="reviewRating1" type="radio" name="reviewRating" value="1"><label for="reviewRating1" aria-label="1 star">★</label>',
+        '        </div>',
+        '      </fieldset>',
+        '      <label for="movieReviewText">Your review</label>',
+        '      <textarea id="movieReviewText" name="reviewText" maxlength="1000" placeholder="What did you think of this movie?" required></textarea>',
+        '      <div class="movie-review-form-actions">',
+        '        <button class="btn btn-primary" id="movieReviewSubmit" type="submit">Post review</button>',
+        '        <button class="btn btn-secondary" id="cancelReviewEdit" type="button" hidden>Cancel edit</button>',
+        '      </div>',
+        '      <p class="movie-review-status" id="movieReviewStatus" aria-live="polite"></p>',
+        '    </form>',
+        '    <div>',
+        '      <p class="movie-review-summary" id="movieReviewSummary"></p>',
+        '      <div class="movie-review-list" id="movieReviewList" aria-live="polite"></div>',
+        '    </div>',
+        '  </div>',
+        '</section>',
+        '<dialog class="review-delete-dialog" id="reviewDeleteDialog" aria-labelledby="reviewDeleteHeading">',
+        '  <form method="dialog" class="review-delete-content">',
+        '    <h2 id="reviewDeleteHeading">Delete review?</h2>',
+        '    <p>This will permanently remove your review and rating.</p>',
+        '    <div class="review-delete-actions">',
+        '      <button class="btn btn-secondary" type="submit" value="cancel" autofocus>Cancel</button>',
+        '      <button class="btn btn-danger" id="confirmReviewDelete" type="button">Delete</button>',
+        '    </div>',
+        '  </form>',
+        '</dialog>'
       ].join('');
+
+      renderMoviePeople(document.getElementById('movieDirectorCards'), directors, 'Director');
+      renderMoviePeople(document.getElementById('movieCastCards'), cast, 'Actor');
+
+      const relatedMovieList = document.getElementById('relatedMovieList');
+      if (!relatedMovies || !relatedMovies.length) {
+        relatedMovieList.innerHTML = '<p class="empty-state">No related movies are available right now.</p>';
+      }
+
+      (relatedMovies || []).forEach(function (relatedMovie) {
+        const movieId = relatedMovie.id || relatedMovie.imdbID;
+        if (!movieId) return;
+
+        const link = document.createElement('a');
+        link.className = 'related-movie';
+        link.href = 'movie-details.html?id=' + encodeURIComponent(movieId);
+
+        const image = document.createElement('img');
+        image.src = relatedMovie.Poster && relatedMovie.Poster !== 'N/A' ? relatedMovie.Poster : window.CineVerse.getPosterFallback();
+        image.alt = (relatedMovie.Title || 'Movie') + ' poster';
+        image.loading = 'lazy';
+        image.decoding = 'async';
+
+        const content = document.createElement('div');
+        const title = document.createElement('h3');
+        title.className = 'related-movie-title';
+        title.textContent = relatedMovie.Title || 'Untitled movie';
+
+        const meta = document.createElement('p');
+        meta.className = 'related-movie-meta';
+        meta.textContent = relatedMovie.Year || 'Year unavailable';
+
+        const rating = document.createElement('p');
+        rating.className = 'related-movie-rating';
+        rating.textContent = relatedMovie.imdbRating && relatedMovie.imdbRating !== 'N/A'
+          ? 'TMDB: ' + relatedMovie.imdbRating
+          : 'Rating unavailable';
+
+        content.appendChild(title);
+        content.appendChild(meta);
+        content.appendChild(rating);
+        link.appendChild(image);
+        link.appendChild(content);
+        relatedMovieList.appendChild(link);
+      });
+
+      const movieId = movie.id || movie.imdbID;
+      const reviewForm = document.getElementById('movieReviewForm');
+      const reviewStatus = document.getElementById('movieReviewStatus');
+      const submitButton = document.getElementById('movieReviewSubmit');
+      const cancelButton = document.getElementById('cancelReviewEdit');
+      const deleteDialog = document.getElementById('reviewDeleteDialog');
+      const confirmDeleteButton = document.getElementById('confirmReviewDelete');
+      deleteDialog.addEventListener('close', function () {
+        pendingReviewDeleteIndex = null;
+      });
+      confirmDeleteButton.addEventListener('click', function () {
+        if (pendingReviewDeleteIndex === null) return;
+        const deletedIndex = pendingReviewDeleteIndex;
+        if (!window.CineVerse.deleteReview(movieId, deletedIndex)) return;
+
+        if (editingReviewIndex === deletedIndex) {
+          editingReviewIndex = null;
+          reviewForm.reset();
+          submitButton.textContent = 'Post review';
+          cancelButton.hidden = true;
+        } else if (editingReviewIndex !== null && editingReviewIndex > deletedIndex) {
+          editingReviewIndex -= 1;
+        }
+
+        deleteDialog.close();
+        renderMovieReviews(movieId);
+      });
+      reviewForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const selectedRating = reviewForm.querySelector('input[name="reviewRating"]:checked');
+        const reviewText = document.getElementById('movieReviewText').value.trim();
+        if (!selectedRating || !reviewText) {
+          reviewStatus.textContent = 'Choose a star rating and write a review.';
+          return;
+        }
+
+        const review = {
+          user: localStorage.getItem('loggedInUser') || 'Movie Lover',
+          rating: Number(selectedRating.value),
+          text: reviewText,
+          date: new Date().toISOString()
+        };
+        const wasEditing = editingReviewIndex !== null;
+        const saved = wasEditing
+          ? window.CineVerse.updateReview(movieId, editingReviewIndex, review)
+          : (window.CineVerse.saveReview(movieId, review), true);
+        if (!saved) {
+          reviewStatus.textContent = 'This review could not be updated. Refresh and try again.';
+          return;
+        }
+
+        editingReviewIndex = null;
+        reviewForm.reset();
+        submitButton.textContent = 'Post review';
+        cancelButton.hidden = true;
+        reviewStatus.textContent = wasEditing ? 'Your changes have been saved.' : 'Your review has been posted.';
+        renderMovieReviews(movieId);
+      });
+
+      cancelButton.addEventListener('click', function () {
+        editingReviewIndex = null;
+        reviewForm.reset();
+        submitButton.textContent = 'Post review';
+        cancelButton.hidden = true;
+        reviewStatus.textContent = 'Edit cancelled.';
+      });
+
+      renderMovieReviews(movieId);
+    }
+
+    function renderMovieReviews(movieId) {
+      const savedReviews = window.CineVerse.getReviews()[movieId];
+      const reviews = (Array.isArray(savedReviews) ? savedReviews : savedReviews ? [savedReviews] : [])
+        .map(function (review, index) {
+          return {
+            index: index,
+            review: typeof review === 'string' ? { user: 'Viewer', text: review } : review
+          };
+        })
+        .filter(function (entry) {
+          const review = entry.review;
+          return review && typeof review === 'object' && (review.text || review.review || review.comment);
+        });
+      const ratedReviews = reviews.filter(function (entry) {
+        return Number(entry.review.rating) >= 1 && Number(entry.review.rating) <= 5;
+      });
+      const average = ratedReviews.length
+        ? ratedReviews.reduce(function (total, entry) { return total + Number(entry.review.rating); }, 0) / ratedReviews.length
+        : 0;
+      const summary = document.getElementById('movieReviewSummary');
+      const list = document.getElementById('movieReviewList');
+      summary.textContent = ratedReviews.length
+        ? 'Community rating: ' + average.toFixed(1) + ' / 5 from ' + ratedReviews.length + (ratedReviews.length === 1 ? ' rating' : ' ratings')
+        : 'No ratings yet.';
+      list.innerHTML = '';
+
+      if (!reviews.length) {
+        const empty = document.createElement('p');
+        empty.className = 'empty-state';
+        empty.textContent = 'Be the first to review this movie.';
+        list.appendChild(empty);
+        return;
+      }
+
+      reviews.slice().reverse().forEach(function (entry) {
+        const review = entry.review;
+        const card = document.createElement('article');
+        card.className = 'review-card';
+
+        const header = document.createElement('div');
+        header.className = 'review-header';
+        const user = document.createElement('span');
+        user.className = 'review-user';
+        user.textContent = review.user || 'Viewer';
+        header.appendChild(user);
+
+        const rating = Number(review.rating);
+        if (rating >= 1 && rating <= 5) {
+          const stars = document.createElement('span');
+          stars.className = 'review-stars';
+          stars.setAttribute('aria-label', rating + ' out of 5 stars');
+          stars.textContent = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+          header.appendChild(stars);
+        }
+
+        const text = document.createElement('p');
+        text.className = 'review-text';
+        text.textContent = review.text || review.review || review.comment || '';
+        card.appendChild(header);
+        card.appendChild(text);
+
+        if (review.date) {
+          const date = new Date(review.date);
+          if (!Number.isNaN(date.getTime())) {
+            const time = document.createElement('time');
+            time.className = 'review-date';
+            time.dateTime = date.toISOString();
+            time.textContent = date.toLocaleDateString();
+            card.appendChild(time);
+          }
+        }
+
+        if (review.user && review.user === (localStorage.getItem('loggedInUser') || 'Movie Lover')) {
+          const actions = document.createElement('div');
+          actions.className = 'movie-review-actions';
+
+          const editButton = document.createElement('button');
+          editButton.type = 'button';
+          editButton.className = 'btn btn-secondary';
+          editButton.textContent = 'Edit';
+          editButton.addEventListener('click', function () {
+            editingReviewIndex = entry.index;
+            document.getElementById('movieReviewForm').reset();
+            document.getElementById('movieReviewText').value = review.text || review.review || review.comment || '';
+            const ratingInput = document.querySelector('input[name="reviewRating"][value="' + Number(review.rating) + '"]');
+            if (ratingInput) ratingInput.checked = true;
+            document.getElementById('movieReviewSubmit').textContent = 'Save changes';
+            document.getElementById('cancelReviewEdit').hidden = false;
+            document.getElementById('movieReviewStatus').textContent = 'Editing your review.';
+            document.getElementById('movieReviewForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+
+          const deleteButton = document.createElement('button');
+          deleteButton.type = 'button';
+          deleteButton.className = 'btn btn-danger';
+          deleteButton.textContent = 'Delete';
+          deleteButton.addEventListener('click', function () {
+            pendingReviewDeleteIndex = entry.index;
+            document.getElementById('reviewDeleteDialog').showModal();
+          });
+
+          actions.appendChild(editButton);
+          actions.appendChild(deleteButton);
+          card.appendChild(actions);
+        }
+
+        list.appendChild(card);
+      });
     }
 
     async function loadMovieDetails() {
@@ -254,16 +907,13 @@
 
       try {
         const movie = await window.CineVerse.fetchMovieDetails(imdbID);
-        let trailerKey = '';
-
-        try {
-          const trailer = await window.CineVerse.fetchMovieTrailer(imdbID);
-          trailerKey = trailer && trailer.key ? trailer.key : '';
-        } catch (trailerError) {
-          console.warn('Trailer lookup failed:', trailerError);
-        }
-
-        renderMovieDetail(Object.assign({}, movie, { trailerKey: trailerKey }));
+        const results = await Promise.all([
+          window.CineVerse.fetchMovieTrailer(imdbID),
+          window.CineVerse.fetchSimilarMovies(imdbID),
+          window.CineVerse.fetchMovieCredits(imdbID)
+        ]);
+        const trailerKey = results[0] && results[0].key ? results[0].key : '';
+        renderMovieDetail(Object.assign({}, movie, { trailerKey: trailerKey }), results[1], results[2]);
       } catch (error) {
         console.error('Movie details failed to load:', error);
         detailContainer.innerHTML = '<div class="empty-state">This movie could not be loaded right now.</div>';

@@ -8,7 +8,10 @@
 </head>
 <body class="auth-page">
 <div class="auth-shell">
-  <div class="auth-brand">CineVerse</div>
+  <div class="auth-brand" role="img" aria-label="CineVerse">
+    <img src="assets/cineverse-logo.svg" alt="">
+    <span>CineVerse</span>
+  </div>
 
   <main class="auth-card">
     <header>
@@ -33,6 +36,13 @@
       <a class="auth-link" href="reset-password.html">Forgot Password?</a> | <a class="auth-link" href="signup.html">Sign Up</a>
     </div>
   </main>
+
+  <aside class="demo-account" aria-labelledby="demoAccountTitle">
+    <h2 id="demoAccountTitle">Demo account</h2>
+    <p>Use these credentials to explore CineVerse:</p>
+    <p><strong>Username:</strong> <code>demo</code></p>
+    <p><strong>Password:</strong> <code>demo123</code></p>
+  </aside>
 </div>
 <script src="js/global.js"></script>
 <script>
@@ -80,6 +90,11 @@
     if (!validUser && username.toLowerCase() === 'admin' && password === 'admin123') {
       validUser = true;
       loggedInUsername = 'admin';
+    }
+
+    if (!validUser && username.toLowerCase() === 'demo' && password === 'demo123') {
+      validUser = true;
+      loggedInUsername = 'demo';
     }
 
     if (validUser) {
