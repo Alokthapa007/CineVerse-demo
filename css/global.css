@@ -478,6 +478,16 @@ p {
   margin: 8px auto 28px;
 }
 
+@media (max-width: 380px) {
+  .movie-search {
+    flex-direction: column;
+  }
+
+  .movie-search button {
+    min-height: 48px;
+  }
+}
+
 .movie-search input {
   flex: 1;
   min-width: 0;
